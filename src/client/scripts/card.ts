@@ -11,8 +11,40 @@ import {
   deleteCardHandler,
 } from './card-handlers'
 
+export type CardData = {
+  ids: [number, number, number]
+
+  columnElm: HTMLElement
+
+  cardElm: HTMLElement
+  cardFormElm: HTMLElement
+
+  createCardBtnElm: HTMLElement
+  deleteCardBtnElm: HTMLElement
+  editOkBtnElm: HTMLElement
+  createCardOKBtnElm: HTMLElement
+  cancelBtnElm: HTMLElement
+}
+
+const getData = (target: HTMLElement): CardData => ({
+  ids: getElementIds(target),
+
+  columnElm: target.closest('.column'),
+
+  cardElm: target.closest('.card'),
+  cardFormElm: target.closest('.card.new'),
+
+  createCardBtnElm: target.closest('.action-btn.new-card-btn'),
+  deleteCardBtnElm: target.closest('.delete-card-btn'),
+  editOkBtnElm: target.closest('.card-btn.edit'),
+  createCardOKBtnElm: target.closest('.card-btn.add'),
+  cancelBtnElm: target.closest('.card-btn.cancel'),
+})
+
 // '취소'
-const cancelCreateOrEditHandler = (cardFormElm: HTMLElement) => {
+const cancelCreateOrEditHandler = ({
+  cardFormElm,
+}: Pick<CardData, 'cardFormElm'>) => {
   cardFormElm.remove()
 
   document.querySelector('.card.hide')?.classList.remove('hide')
@@ -21,50 +53,51 @@ const cancelCreateOrEditHandler = (cardFormElm: HTMLElement) => {
 window.addEventListener('click', (e) => {
   const target = e.target as HTMLElement
 
-  const ids = getElementIds(target)
+  const data = getData(target)
+  const {
+    cardElm,
+    createCardBtnElm,
+    deleteCardBtnElm,
+    editOkBtnElm,
+    createCardOKBtnElm,
+    cancelBtnElm,
+  } = data
 
-  const columnElm = target.closest('.column') as HTMLElement
-
-  const cardElm = target.closest('.card') as HTMLElement
-  const cardFormElm = target.closest('.card.new') as HTMLElement
-
-  const createCardBtn = target.closest(
-    '.action-btn.new-card-btn'
-  ) as HTMLElement
-  const deleteCardBtnElm = target.closest('.delete-card-btn') as HTMLElement
-
-  const editOkBtn = target.closest('.card-btn.edit') as HTMLElement
-  const createCardOKBtn = target.closest('.card-btn.add') as HTMLElement
-  const cancelBtn = target.closest('.card-btn.cancel') as HTMLElement
-
-  if (createCardBtn) {
-    createCardFormHandler(columnElm)
+  if (createCardBtnElm) {
+    createCardFormHandler(data)
     return
   }
 
-  if (createCardOKBtn) {
-    createCardHandler(columnElm, cardFormElm, ids)
+  if (createCardOKBtnElm) {
+    createCardHandler(data)
     return
   }
 
-  if (editOkBtn) {
+  if (editOkBtnElm) {
     const previousCardId = getPreviousCardNumber(cardElm)
-    editCardHandler(cardFormElm, previousCardId, ids)
+    editCardHandler(data, previousCardId)
     return
   }
 
-  if (cancelBtn) {
-    cancelCreateOrEditHandler(cardFormElm)
+  if (cancelBtnElm) {
+    cancelCreateOrEditHandler(data)
     return
   }
 
   if (deleteCardBtnElm) {
-    deleteCardHandler(cardElm, ids)
+    deleteCardHandler(data)
     return
   }
+})
+
+window.addEventListener('dblclick', (e) => {
+  const target = e.target as HTMLElement
+
+  const data = getData(target)
+  const { cardElm, cardFormElm } = data
 
   if (cardElm && !cardFormElm) {
-    editCardFormHandler(columnElm, cardElm, ids)
+    editCardFormHandler(data)
     return
   }
 })

@@ -1,10 +1,11 @@
 import { removeACardAPI } from '@/client/api/remove-a-card'
+import { CardData } from '../card'
 
 // '삭제'
-const deleteCardHandler = async (
-  cardElm: HTMLElement,
-  ids: [number, number, number]
-) => {
+const deleteCardHandler = async ({
+  cardElm,
+  ids,
+}: Pick<CardData, 'cardElm' | 'ids'>) => {
   const [boardId, columnId, cardId] = ids
 
   const success = await removeACardAPI({

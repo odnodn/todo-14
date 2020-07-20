@@ -6,6 +6,9 @@ import {
   generateNewCardForm,
 } from '@/client/scripts/html-generator'
 
+import { CardData } from '../card'
+import { Card } from '@/types/response'
+
 //  textarea 입력에 따라 카드추가 버튼 활성/비활성화
 const createCardOkBtnClickHandler = (e) => {
   const okBtn = document.querySelector('.card-btn.add')
@@ -19,7 +22,7 @@ const createCardOkBtnClickHandler = (e) => {
 }
 
 // '새 카드 등록(+)' 버튼 클릭
-const createCardFormHandler = (columnElm: HTMLElement) => {
+const createCardFormHandler = ({ columnElm }: Pick<CardData, 'columnElm'>) => {
   const cardContainerElem = columnElm.querySelector('.cards-container')
 
   const newCardFormElm = generateNewCardForm({ content: '' })
@@ -30,11 +33,11 @@ const createCardFormHandler = (columnElm: HTMLElement) => {
 }
 
 // '추가' 확인
-const createCardHandler = async (
-  columnElm: HTMLElement,
-  cardFormElm: HTMLElement,
-  ids: [number, number, number]
-) => {
+const createCardHandler = async ({
+  columnElm,
+  cardFormElm,
+  ids,
+}: Pick<CardData, 'columnElm' | 'cardFormElm' | 'ids'>) => {
   const textAreaElm = cardFormElm.querySelector('textarea')
   const content = textAreaElm.value.trim()
   if (!content) return

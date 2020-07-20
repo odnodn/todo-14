@@ -5,6 +5,8 @@ import { eventCollector } from '@/client/utils/event-collector'
 
 import { modifyACardAPI } from '@/client/api/modify-a-card'
 
+import { CardData } from '../card'
+
 const editCardOkBtnClickHandler = (e) => {
   e.stopPropagation()
   const editBtn = document.querySelector('.card-btn.edit')
@@ -19,9 +21,8 @@ const editCardOkBtnClickHandler = (e) => {
 
 // '수정' 확인
 const editCardHandler = async (
-  cardFormElm: HTMLElement,
-  previousCardId: number,
-  ids: [number, number, number]
+  { cardFormElm, ids }: Pick<CardData, 'cardFormElm' | 'ids'>,
+  previousCardId: number
 ) => {
   const textAreaElm = cardFormElm.querySelector('textarea')
   const content = textAreaElm.value.trim()
@@ -49,11 +50,11 @@ const editCardHandler = async (
 }
 
 // '카드 수정(카드 클릭)'
-const editCardFormHandler = (
-  columnElm: HTMLElement,
-  cardElm: HTMLElement,
-  ids: [number, number, number]
-) => {
+const editCardFormHandler = ({
+  columnElm,
+  cardElm,
+  ids,
+}: Pick<CardData, 'columnElm' | 'cardElm' | 'ids'>) => {
   const title = cardElm.querySelector('.card-title').textContent
   const body = cardElm.querySelector('.card-body').textContent
   const content = [title, body].join('\n').trim()
