@@ -1,5 +1,6 @@
-import express from 'express'
+import { Column } from '@/types/schema'
 import { escape } from '../modules/escape'
+import express from 'express'
 import { query } from '../modules/query'
 
 const router = express.Router()
@@ -15,6 +16,28 @@ router.delete('/board/:boardId/column/:columnId', async ({ params }, res) => {
   if (!boardId || !columnId) {
     res.sendStatus(400)
     return
+  }
+
+  const [column] = await query<Column[]>(
+    `SELECT * FROM \`column\` WHERE id=${escape(columnId)}`
+  )
+
+  const previousColumnId = column.previousColumnId
+
+  const [nextColumn] = await query<Column[]>(
+    `SELECT * FROM \`column\` WHERE previousColumnId=${escape(columnId)}`
+  )
+
+  // TODO: transaction
+
+  if (nextColumn) {
+    await query(`
+      UPDATE \`column\`
+      SET
+      previousColumnId=${previousColumnId}
+      WHERE
+      id=${escape(nextColumn.id)}
+    `)
   }
 
   // TODO: Check user ownership
