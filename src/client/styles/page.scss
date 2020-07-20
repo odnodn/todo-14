@@ -147,8 +147,6 @@ $elm-padding: 19px;
         .card-title {
           font-size: 16px;
           font-weight: 600;
-
-          pointer-events: none;
         }
 
         .card-body {
@@ -156,8 +154,7 @@ $elm-padding: 19px;
           font-size: 16px;
           font-weight: 400;
           margin-top: 15px;
-
-          pointer-events: none;
+          white-space: break-spaces;
         }
 
         .delete-card-btn {
