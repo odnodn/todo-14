@@ -17,7 +17,7 @@ export const generateColumn = ({
   const columnHtml = `
   <div class="column" data-column-id="${id}">
     <div class="column-header">
-      <h2 class="column-name">${name}</h2>
+      <h2 class="column-name" spellcheck="false">${name}</h2>
       <div class="actions">
         <button class="action-btn new-card-btn">
           <i class="icon add">plus</i>

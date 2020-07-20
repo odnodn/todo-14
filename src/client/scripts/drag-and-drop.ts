@@ -129,10 +129,10 @@ window.addEventListener('pointerdown', (e) => {
     (pmc = (e) => {
       // Calculate the delta X, Y
       const deltaX = e.pageX - initialX
-      const offsetY = e.pageY - initialY
+      const deltaY = e.pageY - initialY
 
       // Move the ghost card along with the mouse pointer position
-      ghostCard.style.top = `${originalCardRect.top + offsetY}px`
+      ghostCard.style.top = `${originalCardRect.top + deltaY}px`
       ghostCard.style.left = `${originalCardRect.left + deltaX}px`
 
       // Memoize ghost card's bounding client rect

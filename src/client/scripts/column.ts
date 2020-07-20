@@ -1,3 +1,5 @@
+import { generateColumn } from './html-generator'
+
 async function modifyColumn({
   boardId,
   columnId,
@@ -22,25 +24,7 @@ async function modifyColumn({
 }
 
 function onClickNewColumnBtn(newColumnBtn: HTMLElement) {
-  const columnHtml = `
-<div class="column">
-  <div class="column-header">
-    <h2 class="column-name" spellcheck>untitled column</h2>
-    <div class="actions">
-      <button class="action-btn new-card-btn">
-        <i class="icon">plus</i>
-      </button>
-      <button class="action-btn delete-column-btn">
-        <i class="icon">xmark</i>
-      </button>
-    </div>
-  </div>
-
-  <div class="cards-container"></div>
-</div>
-`
-  const newColumnElm = new DOMParser().parseFromString(columnHtml, 'text/html')
-    .body.firstElementChild
+  const newColumnElm = generateColumn({ id: 0, name: 'untitled column' })
 
   newColumnElm.className = 'column'
 
@@ -48,15 +32,25 @@ function onClickNewColumnBtn(newColumnBtn: HTMLElement) {
     '.column-name'
   ) as HTMLHeadingElement
 
-  fetch('/board/1', {
+  const columns = document.querySelectorAll('.column:not(.new)')
+  const lastColumn = columns[columns.length - 1]
+
+  const boardId = parseInt(
+    document.querySelector('.app').getAttribute('data-board-id')
+  )
+  const previousColumnId =
+    columns.length === 0
+      ? null
+      : parseInt(lastColumn.getAttribute('data-column-id'))
+
+  fetch(`/board/${boardId}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       name: columnNameElm.textContent,
-      // TODO: dynamically get the previous column id
-      previousColumnId: 1,
+      previousColumnId,
     }),
   })
     .then((res) => {
@@ -102,12 +96,11 @@ function onClickNewColumnBtn(newColumnBtn: HTMLElement) {
     window.getSelection().removeAllRanges()
 
     await modifyColumn({
-      // TODO: use current board id
-      boardId: 1,
+      boardId,
       columnId: parseInt(newColumnElm.getAttribute('data-column-id')),
       data: {
         name: columnNameElm.textContent,
-        previousColumnId: 1,
+        previousColumnId,
       },
     })
 
