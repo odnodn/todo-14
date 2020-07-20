@@ -30,13 +30,12 @@ const editCardFormHandler = ({
   const content = [title, body].join('\n').trim()
 
   const [, , cardId] = ids
-  const newCardElm = generateEditCardForm({ content, id: cardId })
-  const cardContainerElem = columnElm.querySelector('.cards-container')
-  cardContainerElem.prepend(newCardElm)
+  const editCardFormElm = generateEditCardForm({ content, id: cardId })
+  cardElm.parentNode.insertBefore(editCardFormElm, cardElm)
 
   cardElm.classList.add('hide')
 
-  const textAreaElm = newCardElm.querySelector('textarea')
+  const textAreaElm = editCardFormElm.querySelector('textarea')
   eventCollector.add(textAreaElm, 'keyup', textAreaKeyupHandler)
 }
 
