@@ -1,7 +1,8 @@
-import { MysqlInsertOrUpdateResult } from '@/types/query'
 import { Board, Column } from '@/types/schema'
-import express from 'express'
+
+import { MysqlInsertOrUpdateResult } from '@/types/query'
 import { escape } from '../modules/escape'
+import express from 'express'
 import { query } from '../modules/query'
 
 const router = express.Router()
@@ -18,14 +19,14 @@ export type CreateColumnRequestBody = {
 router.post('/board/:boardId', async (req, res) => {
   const boardId = parseInt(req.params.boardId)
   const name = req.body.name
-  const previousColumnId = parseInt(req.body.previousColumnId)
+  const previousColumnId = parseInt(req.body.previousColumnId) || null
 
   // If one or many of the requested data are missing,
   // consider the request as a bad request
   if (
     !boardId ||
     !(name && name.length > 0 && name.trim().length > 0) ||
-    !previousColumnId
+    (previousColumnId !== null && typeof previousColumnId !== 'number')
   ) {
     res.sendStatus(400)
 
