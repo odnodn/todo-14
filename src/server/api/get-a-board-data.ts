@@ -1,5 +1,5 @@
-import express from 'express'
 import { escape } from '../modules/escape'
+import express from 'express'
 import { query } from '../modules/query'
 
 const router = express.Router()
@@ -25,6 +25,34 @@ export type GetBoardDataResponseData = {
   }
 }
 
+function mapSort<T extends []>(linkedList: T, previousKey: string): T {
+  const sortedList = [] as T
+  const map = new Map()
+  let currentId = null
+
+  // index the linked list by previous_item_id
+  for (let i = 0; i < linkedList.length; i++) {
+    const item = linkedList[i]
+
+    if (item[previousKey] === null) {
+      // first item
+      currentId = item['id']
+      sortedList.push(item)
+    } else {
+      map.set(item[previousKey], i)
+    }
+  }
+
+  while (sortedList.length < linkedList.length) {
+    // get the item with a previous item ID referencing the current item
+    const nextItem = linkedList[map.get(currentId)]
+    sortedList.push(nextItem)
+    currentId = nextItem['id']
+  }
+
+  return sortedList
+}
+
 router.get('/board/:boardId', async ({ params }, res) => {
   const boardId = parseInt(params.boardId)
 
@@ -47,17 +75,21 @@ router.get('/board/:boardId', async ({ params }, res) => {
   const columns = (await query(
     `SELECT id, name, previousColumnId, createdAt from \`column\` WHERE boardId=${escape(
       boardId
-    )} ORDER BY COALESCE(previousColumnId, id)`
+    )}`
   )) as []
 
-  for (const column of columns) {
-    const cards = await query(
+  const sortedColumns = mapSort(columns, 'previousColumnId')
+
+  for (const column of sortedColumns) {
+    const cards = (await query(
       `SELECT id, content, icon, previousCardId, createdAt, editedAt from card WHERE columnId=${
         (column as any).id
-      }  ORDER BY COALESCE(previousCardId, id)`
-    )
+      }`
+    )) as []
 
-    ;(column as any)['cards'] = cards
+    const sortedCards = mapSort(cards, 'previousCardId')
+
+    ;(column as any)['cards'] = sortedCards
   }
 
   const responseData: GetBoardDataResponseData = {
