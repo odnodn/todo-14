@@ -100,7 +100,7 @@ window.addEventListener('pointerdown', (e) => {
 
   // Insert into the DOM
   originalCard.parentElement.appendChild(ghostCard)
-  originalCard.parentElement.appendChild(placeholder)
+  originalCard.parentElement.prepend(placeholder)
 
   // Trick for activating transitions
   ghostCard.getBoundingClientRect()
@@ -156,7 +156,7 @@ window.addEventListener('pointerdown', (e) => {
       const hoveredColumn = hoveredCard.closest('.column') as HTMLElement
 
       if (!hoveredColumn.contains(placeholder)) {
-        hoveredCard.parentElement.appendChild(placeholder)
+        hoveredCard.parentElement.prepend(placeholder)
       }
 
       // Get hovered card's index (if it's inside the same column)
