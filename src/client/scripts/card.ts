@@ -7,6 +7,7 @@ import { parseContent } from '@/client/utils/content-parser'
 import { eventCollector } from '@/client/utils/event-collector'
 
 import { createACardAPI } from '@/client/api/create-a-card'
+import { modifyACardAPI } from '@/client/api/modify-a-card'
 import { removeACardAPI } from '@/client/api/remove-a-card'
 
 const getBoardId = () => {
@@ -20,6 +21,13 @@ const getColumnId = (columnElm) => {
 const getCardId = (cardElm) => {
   const cardId = cardElm.getAttribute('data-card-id')
   return parseInt(cardId)
+}
+
+const getPreviousCardNumber = (cardElm: HTMLElement): number => {
+  return (
+    parseInt(cardElm.previousElementSibling?.getAttribute('data-card-id')) ||
+    null
+  )
 }
 
 //  textarea 입력에 따라 카드추가 버튼 활성/비활성화
@@ -85,12 +93,27 @@ const createCardHandler = async (
 }
 
 // '수정' 확인
-const editCardHandler = (cardFormElm: HTMLElement) => {
+const editCardHandler = async (
+  columnElm: HTMLElement,
+  cardFormElm: HTMLElement,
+  previousCardId: number
+) => {
   const textAreaElm = cardFormElm.querySelector('textarea')
   const content = textAreaElm.value.trim()
   if (!content) return
 
   const cardElm = document.querySelector('.card.hide')
+  const boardId = getBoardId()
+  const columnId = getColumnId(columnElm)
+  const cardId = getCardId(cardElm)
+
+  const success = modifyACardAPI({
+    urlParam: { boardId, columnId, cardId },
+    bodyParam: { content, columnId, icon: null, previousCardId },
+  })
+
+  if (!success) return
+
   const [title, body] = parseContent(content)
   cardElm.querySelector('.card-title').textContent = title
   cardElm.querySelector('.card-body').textContent = body
@@ -167,7 +190,8 @@ window.addEventListener('click', (e) => {
   }
 
   if (editOkBtn) {
-    editCardHandler(cardFormElm)
+    const previousCardId = getPreviousCardNumber(cardElm)
+    editCardHandler(columnElm, cardFormElm, previousCardId)
     return
   }
 
