@@ -59,7 +59,7 @@ const editCardFormHandler = ({
   const body = cardElm.querySelector('.card-body').textContent
   const content = [title, body].join('\n').trim()
 
-  const [_1, _2, cardId] = ids
+  const [, , cardId] = ids
   const newCardElm = generateEditCardForm({ content, id: cardId })
   const cardContainerElem = columnElm.querySelector('.cards-container')
   cardContainerElem.prepend(newCardElm)
