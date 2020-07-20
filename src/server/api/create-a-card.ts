@@ -17,13 +17,15 @@ export type CreateCardRequestBody = {
   content: string
 }
 
-export type CreateCardResponseData = CardReponse
+export type CreateCardResponseData = {
+  card: CardReponse
+}
 
 const composeCardResponse = (
   card: CardSchema,
   user: UserSchema
-): CardReponse => {
-  return {
+): CreateCardResponseData => ({
+  card: {
     id: card.id,
     user: {
       id: user.id,
@@ -36,8 +38,8 @@ const composeCardResponse = (
     previousCardId: card.previousCardId,
     createdAt: card.createdAt,
     editedAt: card.editedAt,
-  }
-}
+  },
+})
 
 router.post('/board/:boardId/column/:columnId/card', async (req, res) => {
   const { content } = req.body as CreateCardRequestBody
@@ -71,7 +73,7 @@ router.post('/board/:boardId/column/:columnId/card', async (req, res) => {
   }
 
   // type guarantee
-  const result: CreateCardResponseData = composeCardResponse(card, user)
+  const result = composeCardResponse(card, user)
 
   res.json(result)
 })
