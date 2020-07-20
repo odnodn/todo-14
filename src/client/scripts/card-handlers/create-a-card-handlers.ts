@@ -1,10 +1,11 @@
-// '새 카드 등록(+)' 버튼 클릭
-import { createACardAPI } from '@/client/api/create-a-card'
-import { eventCollector } from '@/client/utils/event-collector'
 import {
   generateCard,
   generateNewCardForm,
 } from '@/client/scripts/html-generator'
+
+import { createACardAPI } from '@/client/api/create-a-card'
+
+import { eventCollector } from '@/client/utils/event-collector'
 
 import { CardData } from '../card'
 
@@ -33,18 +34,13 @@ const createCardFormHandler = ({ columnElm }: Pick<CardData, 'columnElm'>) => {
 
 // '추가' 확인
 const createCardHandler = async ({
-  columnElm,
   cardFormElm,
   ids,
-}: Pick<CardData, 'columnElm' | 'cardFormElm' | 'ids'>) => {
+}: Pick<CardData, 'cardFormElm' | 'ids'>) => {
   const textAreaElm = cardFormElm.querySelector('textarea')
   const content = textAreaElm.value.trim()
   if (!content) return
 
-  const cardContainerElem = columnElm.querySelector('.cards-container')
-
-  // const boardId = getBoardId()
-  // const columnId = getColumnId(columnElm)
   const [boardId, columnId] = ids
 
   const newCard = await createACardAPI({
@@ -53,8 +49,8 @@ const createCardHandler = async ({
   })
   const newCardElm = generateCard({ id: newCard.id, content })
 
+  cardFormElm.parentElement.prepend(newCardElm)
   cardFormElm.remove()
-  cardContainerElem.prepend(newCardElm)
 
   eventCollector.remove(textAreaElm, 'keyup')
 }
