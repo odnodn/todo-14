@@ -1,19 +1,19 @@
-type eventHandler = (e: Event) => void
+type EventHandler = (e: Event) => void
 
-type eventListener = {
+type EventListener = {
   el: HTMLElement
   type: string
-  handler: eventHandler
+  handler: EventHandler
 }
 
 class EventCollector {
-  eventListenersList: eventListener[] = null
+  eventListenersList: EventListener[] = null
 
   constructor() {
     this.eventListenersList = []
   }
 
-  add = (el: HTMLElement, type: string, handler: eventHandler) => {
+  add = (el: HTMLElement, type: string, handler: EventHandler) => {
     el.addEventListener(type, handler)
 
     this.eventListenersList.push({ el, type, handler })
