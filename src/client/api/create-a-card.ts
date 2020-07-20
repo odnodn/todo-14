@@ -10,7 +10,7 @@ export const createACardAPI = async ({
 }: {
   urlParam: CreateCardRequestParams
   bodyParam: CreateCardRequestBody
-}): Promise<CreateCardResponseData> => {
+}): Promise<CreateCardResponseData['card']> => {
   const res = await fetch(
     `/board/${urlParam.boardId}/column/${urlParam.columnId}/card`,
     {
@@ -24,5 +24,7 @@ export const createACardAPI = async ({
 
   if (!res.ok) return null
 
-  return await res.json()
+  const { card } = (await res.json()) as CreateCardResponseData
+
+  return card
 }

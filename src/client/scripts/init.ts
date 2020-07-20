@@ -23,7 +23,7 @@ const render = (board: GetBoardDataResponseData['board']) => {
 
     const cardsContainerElm = columnElm.querySelector('.cards-container')
 
-    cards.reverse().map((card) => {
+    cards.map((card) => {
       const { id, content } = card
 
       const cardElm = generateCard({ id, content })

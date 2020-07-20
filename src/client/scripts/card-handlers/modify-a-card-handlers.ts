@@ -7,7 +7,7 @@ import { modifyACardAPI } from '@/client/api/modify-a-card'
 
 import { CardData } from '../card'
 
-const editCardOkBtnClickHandler = (e) => {
+const textAreaKeyupHandler = (e) => {
   e.stopPropagation()
   const editBtn = document.querySelector('.card-btn.edit')
 
@@ -17,6 +17,26 @@ const editCardOkBtnClickHandler = (e) => {
   } else {
     editBtn.removeAttribute('disabled')
   }
+}
+
+// '카드 수정(카드 클릭)'
+const editCardFormHandler = ({
+  columnElm,
+  cardElm,
+  ids,
+}: Pick<CardData, 'columnElm' | 'cardElm' | 'ids'>) => {
+  const title = cardElm.querySelector('.card-title').textContent
+  const body = cardElm.querySelector('.card-body').textContent
+  const content = [title, body].join('\n').trim()
+
+  const [, , cardId] = ids
+  const editCardFormElm = generateEditCardForm({ content, id: cardId })
+  cardElm.parentNode.insertBefore(editCardFormElm, cardElm)
+
+  cardElm.classList.add('hide')
+
+  const textAreaElm = editCardFormElm.querySelector('textarea')
+  eventCollector.add(textAreaElm, 'keyup', textAreaKeyupHandler)
 }
 
 // '수정' 확인
@@ -47,27 +67,6 @@ const editCardHandler = async (
   cardElm.classList.remove('hide')
 
   eventCollector.remove(textAreaElm, 'keyup')
-}
-
-// '카드 수정(카드 클릭)'
-const editCardFormHandler = ({
-  columnElm,
-  cardElm,
-  ids,
-}: Pick<CardData, 'columnElm' | 'cardElm' | 'ids'>) => {
-  const title = cardElm.querySelector('.card-title').textContent
-  const body = cardElm.querySelector('.card-body').textContent
-  const content = [title, body].join('\n').trim()
-
-  const [_1, _2, cardId] = ids
-  const newCardElm = generateEditCardForm({ content, id: cardId })
-  const cardContainerElem = columnElm.querySelector('.cards-container')
-  cardContainerElem.prepend(newCardElm)
-
-  cardElm.classList.add('hide')
-
-  const textAreaElm = newCardElm.querySelector('textarea')
-  eventCollector.add(textAreaElm, 'keyup', editCardOkBtnClickHandler)
 }
 
 export { editCardHandler, editCardFormHandler }
