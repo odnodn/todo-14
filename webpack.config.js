@@ -55,12 +55,7 @@ const config = {
       },
     },
   },
-  plugins: [
-    // new CleanWebpackPlugin({
-    //   cleanOnceBeforeBuildPatterns: ['**/*', '!fonts'],
-    // }),
-    new HtmlWebpackPlugin({ template: 'src/client/pages/index.html' }),
-  ],
+  plugins: [new HtmlWebpackPlugin({ template: 'src/client/pages/index.html' })],
 }
 
 module.exports = config
