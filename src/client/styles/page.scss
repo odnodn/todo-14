@@ -47,6 +47,8 @@ $elm-padding: 19px;
   display: flex;
 
   .column {
+    position: relative;
+
     background-color: var(--white);
     border-radius: var(--column-radius);
     box-shadow: var(--todo-shadow);
@@ -62,6 +64,7 @@ $elm-padding: 19px;
     height: 100%;
 
     .column-header {
+      z-index: 3;
       display: flex;
       justify-content: space-between;
       padding: $elm-padding;
@@ -100,7 +103,7 @@ $elm-padding: 19px;
     }
 
     .cards-container {
-      padding: 0 $elm-padding $elm-padding;
+      padding: 4px $elm-padding 100px;
 
       &:empty {
         height: 100%;
@@ -128,13 +131,7 @@ $elm-padding: 19px;
 
         margin-bottom: 15px;
 
-        &:first-child {
-          margin-top: 4px;
-        }
-
-        &:last-child {
-          margin-bottom: 100px;
-        }
+        transition: transform 200ms ease;
 
         &.hide {
           display: none;
@@ -174,6 +171,11 @@ $elm-padding: 19px;
             opacity: 1;
             pointer-events: all;
           }
+        }
+
+        &.placeholder {
+          background-color: var(--super-light-blue);
+          box-shadow: none;
         }
       }
 
