@@ -23,9 +23,14 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
   const columnId = parseInt(params.columnId)
 
   const name = body.name
-  const previousColumnId = parseInt(body.previousColumnId)
+  const previousColumnId = parseInt(body.previousColumnId) || null
 
-  if (!boardId || !columnId || !name || !previousColumnId) {
+  if (
+    !boardId ||
+    !columnId ||
+    !name ||
+    (previousColumnId !== null && typeof previousColumnId !== 'number')
+  ) {
     res.sendStatus(400)
     return
   }
