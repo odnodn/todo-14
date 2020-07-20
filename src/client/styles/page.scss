@@ -77,7 +77,7 @@ $elm-padding: 19px;
 
       .column-name {
         font-size: 16px;
-        font-weight: 600;
+        font-weight: 500;
         max-width: calc(100% - 75px);
         white-space: initial;
       }
@@ -127,7 +127,6 @@ $elm-padding: 19px;
         border-radius: var(--card-radius);
         white-space: initial;
         transition: transform 0.2s ease;
-        cursor: pointer;
 
         margin-bottom: 15px;
 
@@ -138,12 +137,17 @@ $elm-padding: 19px;
         }
 
         &:hover {
-          transform: scale(1.03);
+          transform: scale(1.02);
+        }
+
+        &:active {
+          transform: scale(1);
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
         }
 
         .card-title {
           font-size: 16px;
-          font-weight: 600;
+          font-weight: 500;
         }
 
         .card-body {
@@ -243,7 +247,7 @@ $elm-padding: 19px;
     .icon {
       font-size: 41px;
       color: var(--baemint);
-      margin-bottom: 5px;
+      margin-bottom: 20px;
       text-shadow: var(--baemin-shadow);
     }
   }
