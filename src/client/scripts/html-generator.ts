@@ -81,11 +81,13 @@ export const generateNewCardForm = ({
 
 export const generateEditCardForm = ({
   content,
+  id,
 }: {
   content: string
+  id: number
 }): HTMLElement => {
   const newCardForm = `
-  <div class="card new">
+  <div class="card new" data-card-id="${id}">
     <textarea
       class="content"
       spellcheck="false"
