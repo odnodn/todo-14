@@ -7,10 +7,9 @@ import {
 } from '@/client/scripts/html-generator'
 
 import { CardData } from '../card'
-import { Card } from '@/types/response'
 
 //  textarea 입력에 따라 카드추가 버튼 활성/비활성화
-const createCardOkBtnClickHandler = (e) => {
+const textAreaKeyupHandler = (e) => {
   const okBtn = document.querySelector('.card-btn.add')
 
   const value = e.target.value.trim()
@@ -29,7 +28,7 @@ const createCardFormHandler = ({ columnElm }: Pick<CardData, 'columnElm'>) => {
   const textAreaElm = newCardFormElm.querySelector('textarea')
 
   cardContainerElem.prepend(newCardFormElm)
-  eventCollector.add(textAreaElm, 'keyup', createCardOkBtnClickHandler)
+  eventCollector.add(textAreaElm, 'keyup', textAreaKeyupHandler)
 }
 
 // '추가' 확인
