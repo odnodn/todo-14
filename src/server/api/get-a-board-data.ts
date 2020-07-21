@@ -75,7 +75,7 @@ router.get('/board/:boardId', async ({ params }, res) => {
   const columns = (await query(
     `SELECT id, name, previousColumnId, createdAt from \`column\` WHERE boardId=${escape(
       boardId
-    )}`
+    )} AND isDeleted=0`
   )) as []
 
   const sortedColumns = mapSort(columns, 'previousColumnId')
@@ -84,7 +84,7 @@ router.get('/board/:boardId', async ({ params }, res) => {
     const cards = (await query(
       `SELECT id, content, icon, previousCardId, createdAt, editedAt from card WHERE columnId=${
         (column as any).id
-      }`
+      } AND isDeleted=0`
     )) as []
 
     const sortedCards = mapSort(cards, 'previousCardId')

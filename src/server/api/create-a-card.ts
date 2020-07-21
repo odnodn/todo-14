@@ -1,8 +1,9 @@
 import express from 'express'
 
+import { escape } from '../modules/escape'
 import { query } from '@/server/modules/query'
-import { MysqlInsertOrUpdateResult } from '@/types/query'
 
+import { MysqlInsertOrUpdateResult } from '@/types/query'
 import { Card as CardReponse } from '@/types/response'
 import { Card as CardSchema, User as UserSchema } from '@/types/schema'
 
@@ -55,14 +56,20 @@ router.post('/board/:boardId/column/:columnId/card', async (req, res) => {
   const { insertId } = await query<
     MysqlInsertOrUpdateResult
   >(`INSERT INTO card (columnId, userId, content)
-  VALUES(${columnId}, ${userId}, "${content}" )`)
+  VALUES(${escape(columnId)}, ${escape(userId)}, ${escape(content)} )`)
+
+  const { affectedRows } = await query<MysqlInsertOrUpdateResult>(
+    `UPDATE card SET previousCardId=${escape(insertId)} WHERE columnId=${escape(
+      columnId
+    )} AND ISNULL(previousCardId) AND id<>${escape(insertId)}`
+  )
 
   const [card] = await query<CardSchema[]>(
-    `SELECT * FROM card WHERE id=${insertId}`
+    `SELECT * FROM card WHERE id=${escape(insertId)}`
   )
 
   const [user] = await query<UserSchema[]>(
-    `SELECT * FROM user WHERE id=${userId}`
+    `SELECT * FROM user WHERE id=${escape(userId)}`
   )
 
   // TODO: insert activity

@@ -1,6 +1,8 @@
 import express from 'express'
 
 import { query } from '@/server/modules/query'
+import { escape } from '../modules/escape'
+
 import { MysqlInsertOrUpdateResult } from '@/types/query'
 
 const router = express.Router()
@@ -17,7 +19,7 @@ router.delete(
     const { cardId } = (req.params as unknown) as RemoveCardRequestParams
 
     const { affectedRows } = await query<MysqlInsertOrUpdateResult>(
-      `DELETE FROM card WHERE id=${cardId}`
+      `UPDATE card SET isDeleted=1 WHERE id=${escape(cardId)}`
     )
 
     if (!affectedRows) {

@@ -6,6 +6,7 @@ import { eventCollector } from '@/client/utils/event-collector'
 import { modifyACardAPI } from '@/client/api/modify-a-card'
 
 import { CardData } from '../card'
+import { getCardData } from '../get-data-id'
 
 const textAreaKeyupHandler = (e) => {
   e.stopPropagation()
@@ -21,13 +22,10 @@ const textAreaKeyupHandler = (e) => {
 
 // '카드 수정(카드 클릭)'
 const editCardFormHandler = ({
-  columnElm,
   cardElm,
   ids,
-}: Pick<CardData, 'columnElm' | 'cardElm' | 'ids'>) => {
-  const title = cardElm.querySelector('.card-title').textContent
-  const body = cardElm.querySelector('.card-body').textContent
-  const content = [title, body].join('\n').trim()
+}: Pick<CardData, 'cardElm' | 'ids'>) => {
+  const { content } = getCardData(cardElm)
 
   const [, , cardId] = ids
   const editCardFormElm = generateEditCardForm({ content, id: cardId })

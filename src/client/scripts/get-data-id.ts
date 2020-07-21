@@ -16,4 +16,21 @@ const getPreviousCardNumber = (cardElm: HTMLElement): number => {
   )
 }
 
-export { getElementIds, getPreviousCardNumber }
+const getCardData = (cardElm: HTMLElement) => {
+  const title = cardElm.querySelector('.card-title').textContent
+  const body = cardElm.querySelector('.card-body').textContent
+  const content = [title, body].join('\n').trim()
+
+  return {
+    columnId: parseInt(
+      cardElm.closest('.column').getAttribute('data-column-id')
+    ),
+    content,
+    icon: null,
+    previousCardId:
+      parseInt(cardElm.previousElementSibling?.getAttribute('data-card-id')) ||
+      null,
+  }
+}
+
+export { getElementIds, getPreviousCardNumber, getCardData }
