@@ -101,7 +101,9 @@ window.addEventListener('pointerdown', (e) => {
     // Disable text selection across the document
     document.body.style.userSelect = 'none'
 
-    const originalColumn = originalCard.closest<HTMLElement>('.column')
+    const originalColumn = originalCard.closest<HTMLElement>(
+      '.column:not(.new)'
+    )
     let previousColumn = originalColumn
 
     const originalCardStyle = window.getComputedStyle(originalCard)
@@ -175,7 +177,7 @@ window.addEventListener('pointerdown', (e) => {
     let pmc: (e: PointerEvent) => void
     let dropTargetCard: HTMLElement = originalCard
     let currentColumn: HTMLElement = originalCard.closest<HTMLElement>(
-      '.column'
+      '.column:not(.new)'
     )
     let direction: 'forward' | 'backward' = 'forward'
 
@@ -207,7 +209,7 @@ window.addEventListener('pointerdown', (e) => {
         )
 
         const hoveredColumn = targetAtCenterOfGhostCard?.closest<HTMLElement>(
-          '.column'
+          '.column:not(.new)'
         )
 
         // Hover on the empty space of other columns
