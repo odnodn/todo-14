@@ -28,6 +28,40 @@ function clearCardTransform(card: HTMLElement): void {
   card.style.transform = card.style.webkitTransform = ''
 }
 
+function clearOriginalColumn(originalCard: HTMLElement, distance: number) {
+  let travelNode = originalCard.previousElementSibling as HTMLElement
+
+  while (travelNode) {
+    if (travelNode.classList.contains('animated')) {
+      clearCardTransform(travelNode)
+    }
+
+    travelNode = travelNode.previousElementSibling as HTMLElement
+  }
+
+  travelNode = originalCard.nextElementSibling as HTMLElement
+
+  while (
+    travelNode &&
+    !travelNode.classList.contains('ghost') &&
+    !travelNode.classList.contains('placeholder')
+  ) {
+    if (!travelNode.classList.contains('animated')) {
+      transformCard(travelNode, -distance)
+    }
+
+    travelNode = travelNode.nextElementSibling as HTMLElement
+  }
+}
+
+function clearColumn(column: HTMLElement) {
+  column
+    .querySelectorAll<HTMLElement>('.card.animated')
+    .forEach((animatedCard) => {
+      clearCardTransform(animatedCard)
+    })
+}
+
 function transformCard(card: HTMLElement, distance: number): void {
   if (isAnimatedCard(card)) {
     return
@@ -102,7 +136,8 @@ window.addEventListener('pointerdown', (e) => {
 
     // Style the ghost card
     ghostCard.classList.add('ghost')
-    ghostCard.style.transition = 'box-shadow 200ms ease, transform 200ms ease'
+    ghostCard.style.transition =
+      'box-shadow 200ms ease, transform 200ms ease, opacity 200ms ease'
     ghostCard.style.top = `${placeholderRect.top}px`
     ghostCard.style.left = `${placeholderRect.left}px`
     ghostCard.style.zIndex = '9999'
@@ -114,11 +149,12 @@ window.addEventListener('pointerdown', (e) => {
     // Trick for activating transitions
     ghostCard.getBoundingClientRect()
 
-    ghostCard.style.boxShadow = '0 22px 60px rgba(0, 0, 0, 0.3)'
+    ghostCard.style.boxShadow = '0 25px 70px rgba(0, 0, 0, 0.4)'
     ghostCard.style.transform = ghostCard.style.webkitTransform = 'scale(1.05)'
 
     // Hide the original card
     originalCard.style.visibility = 'hidden'
+    originalCard.classList.add('original')
 
     let originalCardIndex: number
 
@@ -132,6 +168,11 @@ window.addEventListener('pointerdown', (e) => {
     })
 
     let pmc: (e: PointerEvent) => void
+    let dropTargetCard: HTMLElement = originalCard
+    let currentColumn: HTMLElement = originalCard.closest<HTMLElement>(
+      '.column'
+    )
+    let direction: 'forward' | 'backward' = 'forward'
 
     window.addEventListener(
       'pointermove',
@@ -147,22 +188,72 @@ window.addEventListener('pointerdown', (e) => {
         // Memoize ghost card's bounding client rect
         const ghostCardRect = ghostCard.getBoundingClientRect()
 
+        const ghostCardCenterX = ghostCardRect.left + ghostCardRect.width / 2
+        const ghostCardCenterY = ghostCardRect.top + ghostCardRect.height / 2
+
         // Detect a card based on the coordinate of
         // the center of the ghost card
-        const hoveredCard = document
-          .elementFromPoint(
-            ghostCardRect.left + ghostCardRect.width / 2,
-            ghostCardRect.top + ghostCardRect.height / 2
-          )
-          ?.closest('.card') as HTMLElement
+        const targetAtCenterOfGhostCard = document.elementFromPoint(
+          ghostCardCenterX,
+          ghostCardCenterY
+        )
+        const hoveredCard = targetAtCenterOfGhostCard?.closest<HTMLElement>(
+          '.card'
+        )
 
+        const hoveredColumn = targetAtCenterOfGhostCard?.closest<HTMLElement>(
+          '.column'
+        )
+
+        // Hover on the empty space of other columns
+        const hoveredColumnRect = hoveredColumn?.getBoundingClientRect()
+
+        if (
+          !hoveredCard &&
+          hoveredColumn &&
+          !hoveredColumn.contains(placeholder) &&
+          ghostCardCenterX > hoveredColumnRect.left + 25 &&
+          ghostCardCenterX < hoveredColumnRect.right - 25
+        ) {
+          let offsetTop = 65
+
+          dropTargetCard = null
+          currentColumn = hoveredColumn
+
+          const cards = hoveredColumn.querySelectorAll<HTMLElement>(
+            '.card:not(.ghost):not(.placeholder):not(.original)'
+          )
+
+          cards.forEach((card) => {
+            const style = window.getComputedStyle(card)
+            offsetTop +=
+              card.clientHeight +
+              parseInt(style.marginTop) +
+              parseInt(style.marginBottom)
+          })
+
+          placeholder.style.transform = `translate3d(0, ${offsetTop}px, 0)`
+          hoveredColumn
+            .querySelector<HTMLElement>('.cards-container')
+            .prepend(placeholder)
+
+          if (previousColumn.isSameNode(originalColumn)) {
+            clearOriginalColumn(originalCard, distance)
+          } else {
+            // Clear all the transform of the animated cards
+            // inside the previous column
+            clearColumn(previousColumn)
+          }
+
+          previousColumn = hoveredColumn
+        }
+
+        // Ignore currently animating card
         if (!hoveredCard || hoveredCard.classList.contains('animating')) {
           return
         }
 
-        const hoveredCardRect = hoveredCard.getBoundingClientRect()
-
-        const hoveredColumn = hoveredCard.closest('.column') as HTMLElement
+        dropTargetCard = hoveredCard
 
         if (!hoveredColumn.contains(placeholder)) {
           hoveredCard.parentElement.prepend(placeholder)
@@ -187,7 +278,7 @@ window.addEventListener('pointerdown', (e) => {
         const isBackwarded = isAnimated && !isForwarded
 
         // Determine the direction where the cards should go to
-        const direction: 'forward' | 'backward' = isForwarded
+        direction = isForwarded
           ? 'backward'
           : hasIndexAndIsBigger !== null && hasIndexAndIsBigger
           ? 'forward'
@@ -208,40 +299,20 @@ window.addEventListener('pointerdown', (e) => {
           placeholder.style.transform = `translate3d(0, ${placeholderY}px, 0)`
         }, 0)
 
-        if (!hoveredColumn.isSameNode(originalColumn)) {
-          let travelNode = originalCard.previousElementSibling as HTMLElement
-
-          while (travelNode) {
-            if (travelNode.classList.contains('animated')) {
-              clearCardTransform(travelNode)
-            }
-
-            travelNode = travelNode.previousElementSibling as HTMLElement
+        if (!isOnTheSameColumn) {
+          if (previousColumn.isSameNode(originalColumn)) {
+            clearOriginalColumn(originalCard, distance)
+          } else {
+            clearColumn(previousColumn)
           }
-
-          travelNode = originalCard.nextElementSibling as HTMLElement
-
-          while (
-            travelNode &&
-            !travelNode.classList.contains('ghost') &&
-            !travelNode.classList.contains('placeholder')
-          ) {
-            if (!travelNode.classList.contains('animated')) {
-              transformCard(travelNode, -distance)
-            }
-
-            travelNode = travelNode.nextElementSibling as HTMLElement
-          }
-        } else if (!previousColumn.isSameNode(hoveredColumn)) {
-          previousColumn
-            .querySelectorAll<HTMLElement>('.card.animated')
-            .forEach((animatedCard) => {
-              clearCardTransform(animatedCard)
-            })
+        } else {
+          clearColumn(previousColumn)
         }
 
+        // Memoize the hovered column as the previous column
         previousColumn = hoveredColumn
 
+        // Mutable node for walking through the node tree
         let travelNode = hoveredCard
 
         if (isAnimated) {
@@ -295,14 +366,18 @@ window.addEventListener('pointerdown', (e) => {
       // Remove pointermove listener
       window.removeEventListener('pointermove', pmc)
 
+      // Remove original class name from original card
+      originalCard.classList.remove('original')
+
       // Allow user select of body
       document.body.style.userSelect = ''
 
       // Apply transition for returning
-      ghostCard.style.transition = `top 200ms ease, left 200ms ease, box-shadow 200ms ease, transform 200ms ease`
+      ghostCard.style.transition = `top 200ms ease, left 200ms ease, box-shadow 200ms ease, transform 200ms ease, opacity 200ms ease`
 
       ghostCard.style.boxShadow = 'none'
       ghostCard.style.transform = ghostCard.style.webkitTransform = ''
+      ghostCard.style.opacity = '1'
 
       const placeholderRect = placeholder.getBoundingClientRect()
 
@@ -310,7 +385,47 @@ window.addEventListener('pointerdown', (e) => {
       ghostCard.style.left = `${placeholderRect.left}px`
 
       ghostCard.addEventListener('transitionend', function tec() {
-        ghostCard.parentElement.removeChild(ghostCard)
+        originalCard.removeAttribute('style')
+        placeholder.remove()
+        ghostCard.remove()
+
+        if (dropTargetCard) {
+          dropTargetCard.parentElement.insertBefore(
+            originalCard,
+            direction === 'forward'
+              ? dropTargetCard.nextElementSibling
+              : dropTargetCard
+          )
+        } else {
+          console.log(currentColumn)
+          currentColumn
+            .querySelector<HTMLElement>('.cards-container')
+            .appendChild(originalCard)
+        }
+
+        // Clear all animated cards transform
+        document
+          .querySelectorAll<HTMLElement>('.card.animated')
+          .forEach((animatedCard) => {
+            animatedCard.style.transition = 'none'
+            animatedCard.style.transform = ''
+            animatedCard.classList.remove('animated')
+            animatedCard.classList.remove('forwarded')
+            animatedCard.getBoundingClientRect()
+            animatedCard.removeAttribute('style')
+          })
+
+        // Remove data-card-index attribute
+        originalColumn
+          .querySelectorAll<HTMLElement>('.card')
+          .forEach((card) => card.removeAttribute('data-card-index'))
+
+        originalCard.removeAttribute('data-card-index')
+
+        // Remove dummy cards
+        document
+          .querySelectorAll<HTMLElement>('.dummy-card')
+          .forEach((dummy) => dummy.remove())
 
         ghostCard.removeEventListener('transitionend', tec)
       })
@@ -318,7 +433,7 @@ window.addEventListener('pointerdown', (e) => {
       // Remove pointerup listener
       window.removeEventListener('pointerup', puc)
     })
-  }, 400)
+  }, 200)
 
   window.addEventListener('pointerup', function muc() {
     clearInterval(longPressTimeOut)

@@ -8,6 +8,7 @@ const connection = mysql.createConnection({
   database: config.DB_NAME,
   charset: 'utf8mb4',
   timezone: 'UTC+9',
+  multipleStatements: true,
 })
 
 export { connection }

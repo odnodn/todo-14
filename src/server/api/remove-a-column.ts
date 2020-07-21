@@ -1,4 +1,5 @@
-import { Column } from '@/types/schema'
+import { Card, Column } from '@/types/schema'
+
 import { escape } from '../modules/escape'
 import express from 'express'
 import { query } from '../modules/query'
@@ -30,6 +31,7 @@ router.delete('/board/:boardId/column/:columnId', async ({ params }, res) => {
 
   // TODO: transaction
 
+  // Transfer the preivous column ID to the next column if exists
   if (nextColumn) {
     await query(`
       UPDATE \`column\`
@@ -40,14 +42,36 @@ router.delete('/board/:boardId/column/:columnId', async ({ params }, res) => {
     `)
   }
 
+  const cards = await query<Card[]>(`
+    SELECT *
+    FROM card
+    WHERE columnId = ${escape(columnId)}
+  `)
+
+  if (cards.length > 0) {
+    let removeCardsQuery = ''
+
+    cards.forEach((card) => {
+      removeCardsQuery += `
+      UPDATE card
+      SET isDeleted = 1
+      WHERE id = ${escape(card.id)};
+    `
+    })
+
+    await query(removeCardsQuery)
+  }
+
   // TODO: Check user ownership
-  const sql = `
-    DELETE FROM \`column\`
+  const removeColumnQuery = `
+    UPDATE \`column\`
+    SET
+    isDeleted=1
     WHERE
     id=${escape(columnId)}
   `
 
-  await query(sql)
+  await query(removeColumnQuery)
 
   res.sendStatus(200)
 })
