@@ -114,6 +114,9 @@ window.addEventListener('pointerdown', (e) => {
     const ghostCard = originalCard.cloneNode(true) as HTMLElement
     const placeholder = originalCard.cloneNode() as HTMLElement
 
+    ghostCard.removeAttribute('data-card-id')
+    placeholder.removeAttribute('data-card-id')
+
     // Initialize the ghost card and placeholder CSS properties and class name
     ghostCard.style.pointerEvents = placeholder.style.pointerEvents = 'none'
     ghostCard.style.position = 'fixed'
