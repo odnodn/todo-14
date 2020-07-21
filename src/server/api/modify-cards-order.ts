@@ -1,10 +1,7 @@
-import express from 'express'
-
 import { query } from '@/server/modules/query'
+import { Card } from '@/types/schema'
+import express from 'express'
 import { escape } from '../modules/escape'
-import { connection } from '@/server/modules/connection'
-
-import { MysqlInsertOrUpdateResult } from '@/types/query'
 
 const router = express.Router()
 
@@ -22,7 +19,7 @@ router.put('/board/order', async (req, res) => {
   } = req.body as ModifyCardOrderRequestBody
 
   try {
-    const [targetCard] = await query(
+    const [targetCard] = await query<Card[]>(
       `SELECT * FROM card WHERE id=${escape(cardId)}`
     )
 
@@ -41,7 +38,7 @@ router.put('/board/order', async (req, res) => {
     } else {
       await query(
         `UPDATE card SET previousCardId=${escape(
-          previousCardId
+          targetCard.id
         )}, columnId=${escape(
           columnId
         )} WHERE ISNULL(previousCardId) AND columnId=${escape(columnId)}`
