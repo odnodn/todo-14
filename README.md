@@ -1,4 +1,4 @@
-![Banner](https://user-images.githubusercontent.com/19797697/88058931-1e7d7b00-cb9f-11ea-8b16-5587dd60afa9.gif)
+![Banner](https://user-images.githubusercontent.com/19797697/88070955-3ad4e400-cbae-11ea-886a-d0c93c2eb092.gif)
 
 <p align="center">A To Do web application similar to <a href="https://github.com/features/project-management">GitHub Project</a></p>
 
