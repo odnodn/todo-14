@@ -1,3 +1,5 @@
+import { modifyCardsOrderAPI } from '../api/modify-cards-order'
+
 function isAnimatedCard(card: HTMLElement) {
   return card && card.classList.contains('animated')
 }
@@ -211,6 +213,10 @@ window.addEventListener('pointerdown', (e) => {
         // Hover on the empty space of other columns
         const hoveredColumnRect = hoveredColumn?.getBoundingClientRect()
 
+        if (hoveredColumn) {
+          currentColumn = hoveredColumn
+        }
+
         if (
           !hoveredCard &&
           hoveredColumn &&
@@ -218,10 +224,9 @@ window.addEventListener('pointerdown', (e) => {
           ghostCardCenterX > hoveredColumnRect.left + 25 &&
           ghostCardCenterX < hoveredColumnRect.right - 25
         ) {
-          let offsetTop = 65
+          let offsetTop = 68 // Column header height (64px) + padding top (4px)
 
           dropTargetCard = null
-          currentColumn = hoveredColumn
 
           const cards = hoveredColumn.querySelectorAll<HTMLElement>(
             '.card:not(.ghost):not(.placeholder):not(.original)'
@@ -379,7 +384,7 @@ window.addEventListener('pointerdown', (e) => {
       // Apply transition for returning
       ghostCard.style.transition = `top 200ms ease, left 200ms ease, box-shadow 200ms ease, transform 200ms ease, opacity 200ms ease`
 
-      ghostCard.style.boxShadow = 'none'
+      ghostCard.style.boxShadow = ''
       ghostCard.style.transform = ghostCard.style.webkitTransform = ''
       ghostCard.style.opacity = '1'
 
@@ -387,6 +392,45 @@ window.addEventListener('pointerdown', (e) => {
 
       ghostCard.style.top = `${placeholderRect.top}px`
       ghostCard.style.left = `${placeholderRect.left}px`
+
+      if (!originalCard.isSameNode(dropTargetCard)) {
+        // Update the column ID
+        const currentColumnId = parseInt(
+          currentColumn.getAttribute('data-column-id')
+        )
+
+        const cardId = parseInt(originalCard.getAttribute('data-card-id'))
+        const columnId = currentColumnId
+
+        let previousCardId = null
+
+        if (dropTargetCard) {
+          const previousCard =
+            direction === 'forward'
+              ? dropTargetCard
+              : dropTargetCard.previousElementSibling
+
+          previousCardId =
+            parseInt(previousCard.getAttribute('data-card-id')) || null
+        } else {
+          const allCards = currentColumn.querySelectorAll(
+            '.card:not(.placeholder):not(.ghost)'
+          )
+          previousCardId =
+            parseInt(
+              allCards[allCards.length - 1]?.getAttribute('data-card-id')
+            ) || null
+        }
+
+        // Update card data using API
+        modifyCardsOrderAPI({
+          bodyParam: {
+            cardId,
+            columnId,
+            previousCardId,
+          },
+        })
+      }
 
       ghostCard.addEventListener('transitionend', function tec() {
         originalCard.removeAttribute('style')
@@ -401,7 +445,6 @@ window.addEventListener('pointerdown', (e) => {
               : dropTargetCard
           )
         } else {
-          console.log(currentColumn)
           currentColumn
             .querySelector<HTMLElement>('.cards-container')
             .appendChild(originalCard)
