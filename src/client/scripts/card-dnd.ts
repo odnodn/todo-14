@@ -422,14 +422,16 @@ window.addEventListener('pointerdown', (e) => {
             ) || null
         }
 
-        // Update card data using API
-        modifyCardsOrderAPI({
-          bodyParam: {
-            cardId,
-            columnId,
-            previousCardId,
-          },
-        })
+        if (previousCardId !== cardId) {
+          // Update card data using API
+          modifyCardsOrderAPI({
+            bodyParam: {
+              cardId,
+              columnId,
+              previousCardId,
+            },
+          })
+        }
       }
 
       ghostCard.addEventListener('transitionend', function tec() {
