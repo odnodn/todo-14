@@ -32,11 +32,6 @@ router.put('/board/order', async (req, res) => {
       )} WHERE previousCardId=${escape(targetCard.id)}`
     )
 
-    // 도착지 아래 카드
-    // const [prevCard] = await query(
-    //   `SELECT * FROM card WHERE previousCardId=${escape(previousCardId)}`
-    // )
-
     if (previousCardId) {
       await query(
         `UPDATE card SET previousCardId=${escape(
@@ -44,10 +39,6 @@ router.put('/board/order', async (req, res) => {
         )} WHERE previousCardId=${escape(previousCardId)}`
       )
     } else {
-      // const where = !previousCardId
-      // ? `ISNULL(previousCardId) AND columnId=${escape(columnId)}`
-      // : `id=${escape(targetCard.id)}`
-
       await query(
         `UPDATE card SET previousCardId=${escape(
           previousCardId
@@ -66,41 +57,6 @@ router.put('/board/order', async (req, res) => {
     console.log(err)
     throw err
   }
-
-  res.sendStatus(200)
-
-  // let existNull = false
-
-  // orderList.map(({ id, previousCardId, fromColumnId, toColumnId }) => {
-  //   if (existNull) return
-
-  //   if (!id || !previousCardId || !fromColumnId || !toColumnId) {
-  //     existNull = true
-  //   }
-  // })
-
-  // if (existNull) {
-  //   res.sendStatus(404)
-  //   return
-  // }
-
-  // let queryFailed = false
-
-  // orderList.map(async ({ id, previousCardId, fromColumnId, toColumnId }) => {
-  //   if (queryFailed) return
-
-  //   const { affectedRows } = await query<MysqlInsertOrUpdateResult>(`
-  //     UPDATE card SET columnId=${escape(toColumnId)}, previousCardId=${escape(
-  //     previousCardId
-  //   )} WHERE id=${escape(id)} AND columnId=${escape(fromColumnId)}`)
-
-  //   if (!affectedRows) queryFailed = true
-  // })
-
-  // if (queryFailed) {
-  //   res.sendStatus(404)
-  //   return
-  // }
 
   res.sendStatus(200)
 })
