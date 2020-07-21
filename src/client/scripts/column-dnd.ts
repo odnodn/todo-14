@@ -106,17 +106,12 @@ window.addEventListener('pointerdown', (e) => {
 
       const fromIdx = parseInt(placeholder.getAttribute('from-index'))
       const toIdx = parseInt(hoveredColumn.getAttribute('to-index'))
-      console.log(fromIdx, toIdx)
 
       // 왼쪽에서 오른쪽으로 움직일 때
-      if (fromIdx < toIdx) {
+      if (fromIdx !== toIdx) {
         const step = toIdx - fromIdx
         hoveredColumn.classList.add('animating')
 
-        // const prevIdx = parseInt(hoveredColumn.getAttribute('to-index'))
-        // 작은거 전부다 순회
-
-        // hoveredColumn.setAttribute('to-index', `${prevIdx + 1}`)
         placeholder.setAttribute('from-index', `${toIdx}`)
         placeholder.setAttribute('to-index', `${toIdx}`)
 
@@ -131,11 +126,21 @@ window.addEventListener('pointerdown', (e) => {
               return
 
             const columnIdx = parseInt(elm.getAttribute('to-index'))
+
             if (columnIdx <= toIdx && columnIdx > fromIdx) {
-              elm.setAttribute('to-index', `${toIdx - 1}`)
+              elm.setAttribute('to-index', `${columnIdx - 1}`)
+
               const translateX = getTransformX(elm)
               elm.style.transform = `translate3d(${
                 translateX - COLUMN_FULL_WIDTH
+              }px, 0, 0)`
+            }
+
+            if (columnIdx >= toIdx && columnIdx < fromIdx) {
+              elm.setAttribute('to-index', `${columnIdx + 1}`)
+              const translateX = getTransformX(elm)
+              elm.style.transform = `translate3d(${
+                translateX + COLUMN_FULL_WIDTH
               }px, 0, 0)`
             }
           }
@@ -145,36 +150,41 @@ window.addEventListener('pointerdown', (e) => {
           currentPlaceholderLeft + COLUMN_FULL_WIDTH * step
         }px, 0, 0)`
 
+        eventCollector.add(hoveredColumn, 'transitionend', (e) => {
+          hoveredColumn.classList.remove('animating')
+          eventCollector.remove(hoveredColumn, 'transitionend')
+        })
+
         // const hoveredColumnLeft = getTransformX(hoveredColumn)
         // hoveredColumn.style.transform = `translate3d(${
         //   hoveredColumnLeft - COLUMN_FULL_WIDTH * step
         // }px, 0, 0)`
       }
-      if (fromIdx > toIdx) {
-        {
-          hoveredColumn.classList.add('animating')
+      //   if (fromIdx > toIdx) {
+      //     {
+      //       hoveredColumn.classList.add('animating')
 
-          const prevIdx = parseInt(hoveredColumn.getAttribute('to-index'))
-          // hoveredColumn.setAttribute('to-index', `${prevIdx + 1}`)
-          hoveredColumn.setAttribute('to-index', `${prevIdx + 1}`)
-          placeholder.setAttribute('from-index', `${toIdx}`)
-          placeholder.setAttribute('to-index', `${toIdx}`)
+      //       const prevIdx = parseInt(hoveredColumn.getAttribute('to-index'))
+      //       // hoveredColumn.setAttribute('to-index', `${prevIdx + 1}`)
+      //       hoveredColumn.setAttribute('to-index', `${prevIdx + 1}`)
+      //       placeholder.setAttribute('from-index', `${toIdx}`)
+      //       placeholder.setAttribute('to-index', `${toIdx}`)
 
-          eventCollector.add(hoveredColumn, 'transitionend', (e) => {
-            hoveredColumn.classList.remove('animating')
-            eventCollector.remove(hoveredColumn, 'transitionend')
-          })
+      //       eventCollector.add(hoveredColumn, 'transitionend', (e) => {
+      //         hoveredColumn.classList.remove('animating')
+      //         eventCollector.remove(hoveredColumn, 'transitionend')
+      //       })
 
-          placeholder.style.transform = `translate3d(${
-            currentPlaceholderLeft - COLUMN_FULL_WIDTH
-          }px, 0, 0)`
+      //       placeholder.style.transform = `translate3d(${
+      //         currentPlaceholderLeft - COLUMN_FULL_WIDTH
+      //       }px, 0, 0)`
 
-          const hoveredColumnLeft = getTransformX(hoveredColumn)
-          hoveredColumn.style.transform = `translate3d(${
-            hoveredColumnLeft + COLUMN_FULL_WIDTH
-          }px, 0, 0)`
-        }
-      }
+      //       const hoveredColumnLeft = getTransformX(hoveredColumn)
+      //       hoveredColumn.style.transform = `translate3d(${
+      //         hoveredColumnLeft + COLUMN_FULL_WIDTH
+      //       }px, 0, 0)`
+      //     }
+      //   }
     })
 
     eventCollector.add(window, 'pointerup', (e: MouseEvent) => {

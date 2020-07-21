@@ -3,8 +3,6 @@ body {
     user-select: none;
   }
 
-  // &.hovered .cards-container,
-  // &.hovered .column-header {
   &.hovered {
     .actions,
     .card {
@@ -121,7 +119,7 @@ $elm-padding: 19px;
 
     &.placeholder {
       background-color: var(--white);
-      // opacity: 0.7;
+      opacity: 0.7;
       box-shadow: none;
     }
 
