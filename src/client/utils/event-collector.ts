@@ -2,7 +2,7 @@ type EventHandler = (e: Event) => void
 
 type EventListener = {
   el: HTMLElement
-  type: string
+  type: keyof HTMLElementEventMap
   handler: EventHandler
 }
 
@@ -13,13 +13,17 @@ class EventCollector {
     this.eventListenersList = []
   }
 
-  add = (el: HTMLElement, type: string, handler: EventHandler) => {
+  add = (
+    el: HTMLElement,
+    type: keyof HTMLElementEventMap,
+    handler: EventHandler
+  ) => {
     el.addEventListener(type, handler)
 
     this.eventListenersList.push({ el, type, handler })
   }
 
-  remove = (el: HTMLElement, type: string) => {
+  remove = (el: HTMLElement, type: keyof HTMLElementEventMap) => {
     const idx = this.eventListenersList.findIndex((l) => {
       return l.el === el && l.type === type
     })

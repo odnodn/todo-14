@@ -9,6 +9,7 @@ import { removeAColumnRouter } from './remove-a-column'
 
 import { createACardRouter } from './create-a-card'
 import { modifyACardRouter } from './modify-a-card'
+import { modifyACardsOrderRouter } from './modify-cards-order'
 import { RemoveACardRouter } from './remove-a-card'
 
 const router = express.Router()
@@ -22,6 +23,7 @@ router.use(removeAColumnRouter)
 
 router.use(createACardRouter)
 router.use(modifyACardRouter)
+router.use(modifyACardsOrderRouter)
 router.use(RemoveACardRouter)
 
 export { router as api }
