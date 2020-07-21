@@ -47,3 +47,8 @@ button {
 textarea {
   border: none;
 }
+
+::selection {
+  color: var(--white);
+  background: var(--baemint);
+}
