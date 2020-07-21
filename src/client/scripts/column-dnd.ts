@@ -8,9 +8,6 @@ const getTransformX = (el: HTMLElement): number => {
   return parseInt(el?.style?.transform?.split('px')[0]?.split('(')[1]) || 0
 }
 
-// pointerup이 되면 실행해야지
-// document.body.classList.remove('hovered')
-
 window.addEventListener('pointerdown', (e) => {
   const target = e.target as HTMLElement
 
@@ -42,10 +39,6 @@ window.addEventListener('pointerdown', (e) => {
     ghostColumn.style.height = placeholder.style.height = `${originalColumn.clientHeight}px`
 
     const columnRect = originalColumn.getBoundingClientRect()
-
-    const index = Array.from(originalColumn.parentNode.children).indexOf(
-      originalColumn
-    )
 
     // Style the placeholder
     placeholder.classList.add('placeholder')
@@ -109,53 +102,77 @@ window.addEventListener('pointerdown', (e) => {
       if (!hoveredColumn || hoveredColumn.classList.contains('animating'))
         return
 
-      const hoveredColumnRect = hoveredColumn.getBoundingClientRect()
       const currentPlaceholderLeft = getTransformX(placeholder)
-      const currentPlaceholderRight = currentPlaceholderLeft + COLUMN_WIDTH
+
+      const fromIdx = parseInt(placeholder.getAttribute('from-index'))
+      const toIdx = parseInt(hoveredColumn.getAttribute('to-index'))
+      console.log(fromIdx, toIdx)
 
       // 왼쪽에서 오른쪽으로 움직일 때
-      if (currentPlaceholderLeft <= hoveredColumnRect.left) {
+      if (fromIdx < toIdx) {
+        const step = toIdx - fromIdx
         hoveredColumn.classList.add('animating')
-        const prevIdx = parseInt(hoveredColumn.getAttribute('to-index'))
-        hoveredColumn.setAttribute('to-index', `${prevIdx - 1}`)
-        eventCollector.add(hoveredColumn, 'transitionend', (e) => {
-          hoveredColumn.classList.remove('animating')
-          eventCollector.remove(hoveredColumn, 'transitionend')
-        })
+
+        // const prevIdx = parseInt(hoveredColumn.getAttribute('to-index'))
+        // 작은거 전부다 순회
+
+        // hoveredColumn.setAttribute('to-index', `${prevIdx + 1}`)
+        placeholder.setAttribute('from-index', `${toIdx}`)
+        placeholder.setAttribute('to-index', `${toIdx}`)
+
+        Array.from(originalColumn.parentNode.children).forEach(
+          (elm: HTMLElement) => {
+            if (
+              elm.classList.contains('ghost') ||
+              elm.classList.contains('placeholder') ||
+              elm.classList.contains('new') ||
+              elm.classList.contains('spacer')
+            )
+              return
+
+            const columnIdx = parseInt(elm.getAttribute('to-index'))
+            if (columnIdx <= toIdx && columnIdx > fromIdx) {
+              elm.setAttribute('to-index', `${toIdx - 1}`)
+              const translateX = getTransformX(elm)
+              elm.style.transform = `translate3d(${
+                translateX - COLUMN_FULL_WIDTH
+              }px, 0, 0)`
+            }
+          }
+        )
 
         placeholder.style.transform = `translate3d(${
-          currentPlaceholderLeft + 378
+          currentPlaceholderLeft + COLUMN_FULL_WIDTH * step
         }px, 0, 0)`
 
-        const hoveredColumnLeft = getTransformX(hoveredColumn)
-        hoveredColumn.style.transform = `translate3d(${
-          hoveredColumnLeft - COLUMN_FULL_WIDTH
-        }px, 0, 0)`
-
-        const idx = parseInt(placeholder.getAttribute('to-index'))
-        placeholder.setAttribute('to-index', `${idx + 1}`)
+        // const hoveredColumnLeft = getTransformX(hoveredColumn)
+        // hoveredColumn.style.transform = `translate3d(${
+        //   hoveredColumnLeft - COLUMN_FULL_WIDTH * step
+        // }px, 0, 0)`
       }
-      if (hoveredColumnRect.right <= currentPlaceholderRight) {
+      if (fromIdx > toIdx) {
         {
           hoveredColumn.classList.add('animating')
+
           const prevIdx = parseInt(hoveredColumn.getAttribute('to-index'))
+          // hoveredColumn.setAttribute('to-index', `${prevIdx + 1}`)
           hoveredColumn.setAttribute('to-index', `${prevIdx + 1}`)
+          placeholder.setAttribute('from-index', `${toIdx}`)
+          placeholder.setAttribute('to-index', `${toIdx}`)
+
           eventCollector.add(hoveredColumn, 'transitionend', (e) => {
             hoveredColumn.classList.remove('animating')
             eventCollector.remove(hoveredColumn, 'transitionend')
           })
 
           placeholder.style.transform = `translate3d(${
-            currentPlaceholderLeft - 378
+            currentPlaceholderLeft - COLUMN_FULL_WIDTH
           }px, 0, 0)`
 
           const hoveredColumnLeft = getTransformX(hoveredColumn)
           hoveredColumn.style.transform = `translate3d(${
             hoveredColumnLeft + COLUMN_FULL_WIDTH
           }px, 0, 0)`
-
-          const idx = parseInt(placeholder.getAttribute('to-index'))
-          placeholder.setAttribute('to-index', `${idx - 1}`)
         }
       }
     })
