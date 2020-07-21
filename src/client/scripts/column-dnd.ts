@@ -76,9 +76,31 @@ window.addEventListener('pointerdown', (e) => {
     // Hide the original card
     originalColumn.style.visibility = 'hidden'
 
+    let timer = null
+
     eventCollector.add(window, 'pointermove', (e: MouseEvent) => {
       const deltaX = e.pageX - initialX
       const deltaY = e.pageY - initialY
+
+      const columnsContainer = document.querySelector(
+        'main.columns-container'
+      ) as HTMLElement
+
+      if (!timer) {
+        timer = setTimeout(function () {
+          timer = null
+          const maxScroll =
+            columnsContainer.scrollWidth - columnsContainer.clientWidth
+          if (
+            maxScroll - columnsContainer.scrollLeft > 0 &&
+            window.innerWidth - e.clientX < 100
+          ) {
+            columnsContainer.scrollLeft += 150
+          } else if (columnsContainer.scrollLeft > 0 && e.clientX < 100) {
+            columnsContainer.scrollLeft -= 150
+          }
+        }, 200)
+      }
 
       ghostColumn.style.top = `${originalColumnTop + deltaY}px`
       ghostColumn.style.left = `${originalColumnLeft + deltaX}px`
@@ -154,44 +176,13 @@ window.addEventListener('pointerdown', (e) => {
           hoveredColumn.classList.remove('animating')
           eventCollector.remove(hoveredColumn, 'transitionend')
         })
-
-        // const hoveredColumnLeft = getTransformX(hoveredColumn)
-        // hoveredColumn.style.transform = `translate3d(${
-        //   hoveredColumnLeft - COLUMN_FULL_WIDTH * step
-        // }px, 0, 0)`
       }
-      //   if (fromIdx > toIdx) {
-      //     {
-      //       hoveredColumn.classList.add('animating')
-
-      //       const prevIdx = parseInt(hoveredColumn.getAttribute('to-index'))
-      //       // hoveredColumn.setAttribute('to-index', `${prevIdx + 1}`)
-      //       hoveredColumn.setAttribute('to-index', `${prevIdx + 1}`)
-      //       placeholder.setAttribute('from-index', `${toIdx}`)
-      //       placeholder.setAttribute('to-index', `${toIdx}`)
-
-      //       eventCollector.add(hoveredColumn, 'transitionend', (e) => {
-      //         hoveredColumn.classList.remove('animating')
-      //         eventCollector.remove(hoveredColumn, 'transitionend')
-      //       })
-
-      //       placeholder.style.transform = `translate3d(${
-      //         currentPlaceholderLeft - COLUMN_FULL_WIDTH
-      //       }px, 0, 0)`
-
-      //       const hoveredColumnLeft = getTransformX(hoveredColumn)
-      //       hoveredColumn.style.transform = `translate3d(${
-      //         hoveredColumnLeft + COLUMN_FULL_WIDTH
-      //       }px, 0, 0)`
-      //     }
-      //   }
     })
 
     eventCollector.add(window, 'pointerup', (e: MouseEvent) => {
       document.body.classList.remove('hovered')
       eventCollector.remove(window, 'pointermove')
 
-      const fromIdx = placeholder.getAttribute('from-index')
       const toIdx = placeholder.getAttribute('to-index')
 
       ghostColumn.style.transition = `top 200ms ease, left 200ms ease, box-shadow 200ms ease, transform 200ms ease`

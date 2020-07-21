@@ -56,8 +56,10 @@ $elm-padding: 19px;
   padding-bottom: 25px;
   flex: 1;
   overflow-x: auto;
+  scroll-behavior: smooth;
   white-space: nowrap;
   display: flex;
+  position: relative;
 
   .column {
     position: relative;
