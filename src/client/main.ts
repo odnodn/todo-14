@@ -1,7 +1,7 @@
 import './styles/globalstyle.scss'
 import './styles/page.scss'
 
-import './scripts/drag-and-drop'
+import './scripts/card-dnd'
 
 import './scripts/init.ts'
 
