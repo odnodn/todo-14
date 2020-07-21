@@ -267,8 +267,8 @@ window.addEventListener('pointerdown', (e) => {
 
         // Compare the hovered card's index and the original card's
         // only if both cards are inside the same column
-        const isOnTheSameColumn = !isNaN(hoveredCardIndex)
-        const hasIndexAndIsBigger = !isOnTheSameColumn
+        const isOnTheOriginalColumn = !isNaN(hoveredCardIndex)
+        const hasIndexAndIsBigger = !isOnTheOriginalColumn
           ? null
           : originalCardIndex < hoveredCardIndex
 
@@ -299,14 +299,15 @@ window.addEventListener('pointerdown', (e) => {
           placeholder.style.transform = `translate3d(0, ${placeholderY}px, 0)`
         }, 0)
 
-        if (!isOnTheSameColumn) {
+        // Clear previous column's transform transition
+        if (!previousColumn.isSameNode(hoveredColumn)) {
+          // Different strategy for the original column and others
+
           if (previousColumn.isSameNode(originalColumn)) {
             clearOriginalColumn(originalCard, distance)
           } else {
             clearColumn(previousColumn)
           }
-        } else {
-          clearColumn(previousColumn)
         }
 
         // Memoize the hovered column as the previous column
@@ -342,7 +343,7 @@ window.addEventListener('pointerdown', (e) => {
         if (
           travelNode &&
           travelNode.isSameNode(originalCard) &&
-          isOnTheSameColumn
+          isOnTheOriginalColumn
         ) {
           travelNode = (direction === 'forward'
             ? travelNode.previousElementSibling
