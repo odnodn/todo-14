@@ -250,6 +250,15 @@ $elm-padding: 19px;
             font-size: 16px;
             font-weight: 500;
             border-radius: var(--btn-radius);
+            transition: filter 200ms ease;
+
+            &:hover {
+              filter: brightness(0.95);
+            }
+
+            &:active {
+              filter: brightness(0.9);
+            }
 
             &.add,
             &.edit {
