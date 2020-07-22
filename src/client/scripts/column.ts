@@ -1,28 +1,6 @@
 import { generateColumn } from './html-generator'
 import { getElementIds } from './get-data-id'
-
-async function modifyColumn({
-  boardId,
-  columnId,
-  data,
-}: {
-  boardId: number
-  columnId: number
-  data: {
-    name: string
-    previousColumnId: number
-  }
-}) {
-  const res = await fetch(`/board/${boardId}/column/${columnId}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  })
-
-  return res.ok
-}
+import { modifyColumn } from '../api/modify-a-column'
 
 function onClickNewColumnBtn(newColumnBtn: HTMLElement) {
   const columnsContainer = newColumnBtn.closest('.columns-container')
