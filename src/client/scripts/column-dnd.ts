@@ -1,3 +1,5 @@
+import { modifyColumn } from '@/client/api/modify-a-column'
+
 import { eventCollector } from '@/client/utils/event-collector'
 
 const COLUMN_MARGIN_LEFT = 25
@@ -185,7 +187,7 @@ window.addEventListener('pointerdown', (e) => {
       document.body.classList.remove('hovered')
       eventCollector.remove(window, 'pointermove')
 
-      const toIdx = placeholder.getAttribute('to-index')
+      const toIdx = parseInt(placeholder.getAttribute('to-index'))
 
       ghostColumn.style.transition = `top 200ms ease, left 200ms ease, box-shadow 200ms ease, transform 200ms ease`
 
@@ -197,14 +199,31 @@ window.addEventListener('pointerdown', (e) => {
       ghostColumn.style.top = `${placeholderRect.top}px`
       ghostColumn.style.left = `${placeholderRect.left}px`
 
-      ghostColumn.addEventListener('transitionend', function tec() {
+      ghostColumn.addEventListener('transitionend', async function tec() {
         ghostColumn.remove()
         placeholder.remove()
 
         ghostColumn.removeEventListener('transitionend', tec)
 
-        // ghostColumn.remove()
-        originalColumn.setAttribute('to-index', toIdx)
+        originalColumn.setAttribute('to-index', `${toIdx}`)
+
+        const idx = Array.from(originalColumn.parentNode.children).findIndex(
+          (el) => parseInt(el.getAttribute('to-index')) === toIdx - 1
+        )
+        console.log(idx)
+
+        modifyColumn({
+          boardId: 1,
+          columnId: parseInt(originalColumn.getAttribute('data-column-id')),
+          data: {
+            previousColumnId:
+              parseInt(
+                originalColumn.parentNode.children[idx]?.getAttribute(
+                  'data-column-id'
+                )
+              ) || null,
+          },
+        })
 
         const result = Array.from(originalColumn.parentNode.children)
           .sort((a, b) => {
