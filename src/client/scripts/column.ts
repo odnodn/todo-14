@@ -159,8 +159,8 @@ window.addEventListener('dblclick', (e) => {
 
     const newName = columnNameElm.textContent.trim()
 
-    if (newName === originalName) {
-      columnNameElm.innerHTML = newName
+    if (newName.length === 0 || newName === originalName) {
+      columnNameElm.innerHTML = originalName
       return
     }
 
