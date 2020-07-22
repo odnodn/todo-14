@@ -54,16 +54,20 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
     return
   }
 
+  let previousColumn: Column = null
+
   // Check if the previous column exists
   // only if the previous column id is given
   if (previousColumnId) {
-    const [previousColumn] = await query<Column[]>(`
-      SELECT * from \`column\`
+    previousColumn = (
+      await query<Column[]>(`
+      SELECT * FROM \`column\`
       WHERE
       id=${previousColumnId}
       AND
-      isDeleted=0
+      isDeleted = 0
     `)
+    )[0]
 
     if (!previousColumn) {
       res.sendStatus(400)
@@ -72,6 +76,20 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
   }
 
   const shouldUpdateOrder = previousColumnId !== undefined
+
+  let originalPreviousColumn: Column = null
+
+  if (shouldUpdateOrder && column.previousColumnId) {
+    originalPreviousColumn = (
+      await query<Column[]>(`
+      SELECT * FROM \`column\`
+      WHERE
+      id=${column.previousColumnId}
+      AND
+      isDeleted = 0
+    `)
+    )[0]
+  }
 
   connection.beginTransaction(async (err) => {
     if (err) throw err
@@ -120,7 +138,6 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
         id = ${escape(column.id)}
       `)
 
-      // TODO: Create an activity after the modification
       if (newName) {
         await createActivity({
           type: 'modify',
@@ -130,13 +147,17 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
           to: newName,
         })
       } else if (shouldUpdateOrder) {
-        await createActivity({
-          type: 'move',
-          boardId,
-          columnId,
-          from: column.previousColumnId.toString(),
-          to: previousColumnId ? previousColumnId.toString() : previousColumnId,
-        })
+        if (previousColumnId !== column.previousColumnId) {
+          await createActivity({
+            type: 'move',
+            boardId,
+            columnId,
+            from: `${originalPreviousColumn?.id ?? null},${
+              originalPreviousColumn?.name ?? ''
+            }`,
+            to: `${previousColumn?.id ?? null},${previousColumn?.name ?? ''}`,
+          })
+        }
       }
 
       connection.commit((err) => {
