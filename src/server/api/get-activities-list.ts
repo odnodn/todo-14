@@ -3,28 +3,50 @@ import express from 'express'
 import { query } from '@/server/modules/query'
 import { escape } from '@/server/modules/escape'
 
-import { Activity as ActivityResponse } from '@/types/response'
-
 const router = express.Router()
 
-export type GetActivitiesListRequestParams = {
-  boardId: number
-}
-
-export type GetActivitiesListResponseData = {
-  activities: ActivityResponse[]
-}
-
 router.get('/board/:boardId/activity', async (req, res) => {
-  const { boardId } = (req.params as unknown) as GetActivitiesListRequestParams
-  // 가져올 컬럼을 여기서 셋팅하면 generic type은 어떻게...?
-  const activities = await query<ActivityResponse[]>(
+  const { boardId } = req.params
+
+  const activities = await query<any>(
     `SELECT * FROM activity WHERE boardId=${escape(boardId)}`
   )
 
-  const result: GetActivitiesListResponseData = { activities }
+  const result = []
 
-  res.json(result)
+  for (const act of activities) {
+    if (act.cardId) {
+      const [card] = await query(`
+      SELECT * FROM card WHERE id=${escape(act.cardId)}`)
+      const { id, type, boardId, occuredAt, fromm, to } = act
+      result.push({
+        id,
+        type,
+        boardId,
+        occuredAt,
+        fromm,
+        to,
+        card,
+        column: null,
+      })
+    } else if (act.columnId) {
+      const [column] = await query(`
+      SELECT * FROM \`column\` WHERE id=${escape(act.columnId)}`)
+      const { id, type, boardId, occuredAt, fromm, to } = act
+      result.push({
+        id,
+        type,
+        boardId,
+        occuredAt,
+        fromm,
+        to,
+        card: null,
+        column,
+      })
+    }
+  }
+
+  res.json({ activities: result })
 })
 
 export { router as getActivitiesListRouter }
