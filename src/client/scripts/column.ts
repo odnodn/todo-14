@@ -1,28 +1,6 @@
 import { generateColumn } from './html-generator'
 import { getElementIds } from './get-data-id'
-
-async function modifyColumn({
-  boardId,
-  columnId,
-  data,
-}: {
-  boardId: number
-  columnId: number
-  data: {
-    name: string
-    previousColumnId: number
-  }
-}) {
-  const res = await fetch(`/board/${boardId}/column/${columnId}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  })
-
-  return res.ok
-}
+import { modifyColumn } from '../api/modify-a-column'
 
 function onClickNewColumnBtn(newColumnBtn: HTMLElement) {
   const columnsContainer = newColumnBtn.closest('.columns-container')
@@ -38,15 +16,10 @@ function onClickNewColumnBtn(newColumnBtn: HTMLElement) {
   ) as HTMLHeadingElement
 
   const columns = document.querySelectorAll('.column:not(.new)')
-  const lastColumn = columns[columns.length - 1]
 
   const boardId = parseInt(
     document.querySelector('.app').getAttribute('data-board-id')
   )
-  const previousColumnId =
-    columns.length === 0
-      ? null
-      : parseInt(lastColumn.getAttribute('data-column-id'))
 
   // Create a column API
   fetch(`/board/${boardId}`, {
@@ -105,7 +78,6 @@ function onClickNewColumnBtn(newColumnBtn: HTMLElement) {
       columnId: parseInt(newColumnElm.getAttribute('data-column-id')),
       data: {
         name: columnNameElm.textContent,
-        previousColumnId,
       },
     })
 
@@ -174,6 +146,7 @@ window.addEventListener('dblclick', (e) => {
   sel.removeAllRanges()
   sel.addRange(range)
 
+  // Process when blur the contenteditable field
   columnNameElm.addEventListener('blur', async function bc() {
     columnNameElm.removeEventListener('blur', bc)
 
@@ -181,12 +154,11 @@ window.addEventListener('dblclick', (e) => {
 
     const newName = columnNameElm.textContent.trim()
 
-    if (newName === originalName) {
-      columnNameElm.innerHTML = newName
+    if (newName.length === 0 || newName === originalName) {
+      columnNameElm.innerHTML = originalName
       return
     }
 
-    const columnElm = columnNameElm.closest('.column') as HTMLElement
     const [boardId, columnId] = getElementIds(columnNameElm)
 
     await modifyColumn({
@@ -194,10 +166,6 @@ window.addEventListener('dblclick', (e) => {
       columnId,
       data: {
         name: columnNameElm.textContent,
-        previousColumnId:
-          parseInt(
-            columnElm.previousElementSibling?.getAttribute('data-column-id')
-          ) || null,
       },
     })
   })
