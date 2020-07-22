@@ -68,35 +68,37 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
     }
   }
 
-  const [columnPointingMe] = await query<Column[]>(`
-    SELECT * FROM \`column\`
-    WHERE
-    previousColumnId = ${escape(column.id)}
-  `)
+  const shouldUpdateOrder = previousColumnId !== undefined
 
   connection.beginTransaction(async (err) => {
     if (err) throw err
 
     try {
-      if (columnPointingMe && previousColumnId) {
-        // Update card which was pointing me
+      if (shouldUpdateOrder) {
         await query(`
-          UPDATE \`column\`
-          SET
+          UPDATE \`column\` SET
           previousColumnId = ${escape(column.previousColumnId)}
           WHERE
-          id = ${escape(columnPointingMe.id)}
+          previousColumnId = ${escape(column.id)}
         `)
 
-        // Update card which was pointing the card
-        // which will be newly pointed by me
-        await query(`
-          UPDATE \`column\`
-          SET
-          previousColumnId = ${escape(column.id)}
-          WHERE
-          previousColumnId = ${columnPointingMe.id}
-        `)
+        if (previousColumnId) {
+          await query(`
+            UPDATE \`column\` SET
+            previousColumnId = ${escape(column.id)}
+            WHERE
+            previousColumnId = ${escape(previousColumnId)}
+          `)
+        } else {
+          await query(`
+            UPDATE \`column\` SET
+            previousColumnId = ${escape(column.id)}
+            WHERE
+            ISNULL(previousColumnId)
+            AND
+            boardId = ${escape(boardId)}
+          `)
+        }
       }
 
       // Update mine
@@ -105,7 +107,7 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
         SET
         ${name ? `name = ${escape(name)}` : ''}
         ${
-          previousColumnId
+          shouldUpdateOrder
             ? `${name ? ',' : ''} previousColumnId = ${escape(
                 previousColumnId
               )}`
@@ -114,19 +116,6 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
         WHERE
         id = ${escape(column.id)}
       `)
-
-      console.log(`
-      UPDATE \`column\`
-      SET
-      ${name ? `name = ${escape(name)}` : ''}
-      ${
-        previousColumnId
-          ? `${name ? ',' : ''} previousColumnId = ${escape(previousColumnId)}`
-          : ''
-      }
-      WHERE
-      id = ${escape(column.id)}
-    `)
 
       connection.commit((err) => {
         if (err) {
