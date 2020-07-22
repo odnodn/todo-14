@@ -25,8 +25,8 @@ export type GetBoardDataResponseData = {
   }
 }
 
-function mapSort<T extends []>(linkedList: T, previousKey: string): T {
-  const sortedList = [] as T
+export function mapSort<T>(linkedList: T[], previousKey: string): T[] {
+  const sortedList = [] as T[]
   const map = new Map()
   let currentId = null
 
