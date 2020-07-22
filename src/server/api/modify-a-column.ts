@@ -3,6 +3,7 @@ import { escape } from '../modules/escape'
 import express from 'express'
 import { query } from '../modules/query'
 import { connection } from '../modules/connection'
+import { createActivity } from '../modules/create-an-activity'
 
 const router = express.Router()
 
@@ -22,7 +23,7 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
   const boardId = parseInt(params.boardId)
   const columnId = parseInt(params.columnId)
 
-  const name = body.name
+  const newName = body.name as string
   const previousColumnId =
     parseInt(body.previousColumnId) == body.previousColumnId
       ? parseInt(body.previousColumnId)
@@ -31,7 +32,9 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
   if (
     !boardId ||
     !columnId ||
-    (!name && previousColumnId !== null && typeof previousColumnId !== 'number')
+    (!newName &&
+      previousColumnId !== null &&
+      typeof previousColumnId !== 'number')
   ) {
     res.sendStatus(400)
     return
@@ -105,10 +108,10 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
       await query(`
         UPDATE \`column\`
         SET
-        ${name ? `name = ${escape(name)}` : ''}
+        ${newName ? `name = ${escape(newName)}` : ''}
         ${
           shouldUpdateOrder
-            ? `${name ? ',' : ''} previousColumnId = ${escape(
+            ? `${newName ? ',' : ''} previousColumnId = ${escape(
                 previousColumnId
               )}`
             : ''
@@ -116,6 +119,25 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
         WHERE
         id = ${escape(column.id)}
       `)
+
+      // TODO: Create an activity after the modification
+      if (newName) {
+        await createActivity({
+          type: 'modify',
+          boardId,
+          columnId,
+          from: column.name,
+          to: newName,
+        })
+      } else if (shouldUpdateOrder) {
+        await createActivity({
+          type: 'move',
+          boardId,
+          columnId,
+          from: column.previousColumnId.toString(),
+          to: previousColumnId ? previousColumnId.toString() : previousColumnId,
+        })
+      }
 
       connection.commit((err) => {
         if (err) {
@@ -127,8 +149,6 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
       throw err
     }
   })
-
-  // TODO: Create an activity after the modification
 
   res.sendStatus(200)
 })
