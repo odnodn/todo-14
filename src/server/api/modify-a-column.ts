@@ -69,36 +69,43 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
     }
   }
 
+  const [columnPointingMe] = await query<Column[]>(`
+    SELECT * FROM \`column\`
+    WHERE
+    previousColumnId = ${escape(column.id)}
+  `)
+
   connection.beginTransaction(async (err) => {
     if (err) throw err
 
     try {
-      // Update the column's previous
-      await query<MysqlInsertOrUpdateResult>(`
-        ${
-          previousColumnId
-            ? `
-UPDATE \`column\`
-SET
-previousColumnId = ${escape(column.previousColumnId)}
-WHERE
-previousColumnId = ${escape(column.id)};
-`
-            : ''
-        }
+      if (columnPointingMe) {
+        // Update card which was pointing me
+        await query(`
+          UPDATE \`column\`
+          SET
+          previousColumnId = ${escape(column.previousColumnId)}
+          WHERE
+          id = ${escape(columnPointingMe.id)}
+        `)
 
+        // Update card which was pointing the card
+        // which will be newly pointed by me
+        await query(`
+          UPDATE \`column\`
+          SET
+          previousColumnId = ${escape(column.id)}
+          WHERE
+          previousColumnId = ${columnPointingMe.id}
+        `)
+      }
+      // Update mine
+      await query(`
         UPDATE \`column\`
         SET
-        ${name ? `name = ${escape(name)}` : ''}
-        ${
-          previousColumnId !== undefined
-            ? `${name ? ',' : ''} previousColumnId = ${escape(
-                previousColumnId
-              )}`
-            : ''
-        }
+        previousColumnId = ${escape(previousColumnId)}
         WHERE
-        id=${escape(column.id)};
+        id = ${escape(column.id)}
       `)
 
       connection.commit((err) => {
