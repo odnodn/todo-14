@@ -7,9 +7,22 @@ const router = express.Router()
 
 router.get('/board/:boardId/activity', async (req, res) => {
   const { boardId } = req.params
+  const { lastSendedActivityId } = req.body
 
+  if (!boardId) {
+    res.sendStatus(404)
+    return
+  }
+
+  const additionalOption = lastSendedActivityId
+    ? `AND id < ${escape(lastSendedActivityId)}`
+    : ''
+
+  // SELECT * FROM activity WHERE boardId=1 AND id < 40 ORDER BY id DESC LIMIT 10
   const activities = await query<any>(
-    `SELECT * FROM activity WHERE boardId=${escape(boardId)}`
+    `SELECT * FROM activity WHERE boardId=${escape(
+      boardId
+    )} ${additionalOption} ORDER BY id DESC LIMIT 10`
   )
 
   const result = []
