@@ -3,9 +3,10 @@ import { Card } from './card'
 
 export type Activity = {
   id: number
-  type: 'card' | 'column'
-  column: Column | null
-  card: Card | null
+  type: 'add' | 'delete' | 'modify' | 'move'
+  boardId: number
+  columnId: number
+  cardId: number
   occurredAt: string
   from: string
   to: string

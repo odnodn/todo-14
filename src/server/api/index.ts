@@ -12,6 +12,8 @@ import { modifyACardRouter } from './modify-a-card'
 import { modifyACardsOrderRouter } from './modify-cards-order'
 import { RemoveACardRouter } from './remove-a-card'
 
+import { getActivitiesListRouter } from './get-activities-list'
+
 const router = express.Router()
 
 router.use(getABoardDataRouter)
@@ -25,5 +27,7 @@ router.use(createACardRouter)
 router.use(modifyACardRouter)
 router.use(modifyACardsOrderRouter)
 router.use(RemoveACardRouter)
+
+router.use(getActivitiesListRouter)
 
 export { router as api }
