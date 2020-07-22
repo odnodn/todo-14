@@ -1,4 +1,4 @@
-import { Column } from '@/types/schema'
+import { Column, Card } from '@/types/schema'
 import { escape } from '../modules/escape'
 import express from 'express'
 import { query } from '../modules/query'
@@ -43,6 +43,26 @@ router.delete('/board/:boardId/column/:columnId', async ({ params }, res) => {
       WHERE
       previousColumnId=${escape(columnId)}
       `)
+
+    const cards = await query<Card[]>(`
+    SELECT *
+    FROM card
+    WHERE columnId = ${escape(columnId)}
+  `)
+
+    if (cards.length > 0) {
+      let removeCardsQuery = ''
+
+      cards.forEach((card) => {
+        removeCardsQuery += `
+      UPDATE card
+      SET isDeleted = 1
+      WHERE id = ${escape(card.id)};
+    `
+      })
+
+      await query(removeCardsQuery)
+    }
 
     connection.commit((err) => {
       if (err) {
