@@ -1,13 +1,4 @@
-import {
-  GetActivitiesListRequestParams,
-  GetActivitiesListResponseData,
-} from '@/server/api/get-activities-list'
-
-export const getBoardListAPI = async ({
-  urlParam,
-}: {
-  urlParam: GetActivitiesListRequestParams
-}): Promise<GetActivitiesListResponseData['activities']> => {
+export const getActivitiesListAPI = async ({ urlParam }: { urlParam }) => {
   const res = await fetch(`/board/${urlParam.boardId}/activity`, {
     method: 'GET',
     headers: {
@@ -17,7 +8,7 @@ export const getBoardListAPI = async ({
 
   if (!res.ok) return null
 
-  const { activities } = (await res.json()) as GetActivitiesListResponseData
+  const { activities } = await res.json()
 
   return activities
 }
