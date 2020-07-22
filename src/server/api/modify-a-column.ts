@@ -1,5 +1,4 @@
 import { Column } from '@/types/schema'
-import { MysqlInsertOrUpdateResult } from '@/types/query'
 import { escape } from '../modules/escape'
 import express from 'express'
 import { query } from '../modules/query'
@@ -79,7 +78,7 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
     if (err) throw err
 
     try {
-      if (columnPointingMe) {
+      if (columnPointingMe && previousColumnId) {
         // Update card which was pointing me
         await query(`
           UPDATE \`column\`
@@ -99,14 +98,35 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
           previousColumnId = ${columnPointingMe.id}
         `)
       }
+
       // Update mine
       await query(`
         UPDATE \`column\`
         SET
-        previousColumnId = ${escape(previousColumnId)}
+        ${name ? `name = ${escape(name)}` : ''}
+        ${
+          previousColumnId
+            ? `${name ? ',' : ''} previousColumnId = ${escape(
+                previousColumnId
+              )}`
+            : ''
+        }
         WHERE
         id = ${escape(column.id)}
       `)
+
+      console.log(`
+      UPDATE \`column\`
+      SET
+      ${name ? `name = ${escape(name)}` : ''}
+      ${
+        previousColumnId
+          ? `${name ? ',' : ''} previousColumnId = ${escape(previousColumnId)}`
+          : ''
+      }
+      WHERE
+      id = ${escape(column.id)}
+    `)
 
       connection.commit((err) => {
         if (err) {
