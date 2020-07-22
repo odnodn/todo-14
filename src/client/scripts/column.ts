@@ -1,4 +1,5 @@
 import { generateColumn } from './html-generator'
+import { getElementIds } from './get-data-id'
 
 async function modifyColumn({
   boardId,
@@ -47,6 +48,7 @@ function onClickNewColumnBtn(newColumnBtn: HTMLElement) {
       ? null
       : parseInt(lastColumn.getAttribute('data-column-id'))
 
+  // Create a column API
   fetch(`/board/${boardId}`, {
     method: 'POST',
     headers: {
@@ -54,7 +56,6 @@ function onClickNewColumnBtn(newColumnBtn: HTMLElement) {
     },
     body: JSON.stringify({
       name: columnNameElm.textContent,
-      previousColumnId,
     }),
   })
     .then((res) => {
@@ -82,7 +83,7 @@ function onClickNewColumnBtn(newColumnBtn: HTMLElement) {
       columnNameRange.setStartBefore(columnNameElm.firstChild)
       columnNameRange.setEndAfter(columnNameElm.firstChild)
 
-      const sel = document.getSelection()
+      const sel = window.getSelection()
 
       sel.removeAllRanges()
       sel.addRange(columnNameRange)
@@ -139,8 +140,10 @@ async function removeColumnHandler(columnElm: HTMLElement) {
 window.addEventListener('click', async (e) => {
   const target = e.target as HTMLElement
 
-  const deleteColumnBtn = target.closest('.action-btn.delete-column-btn')
-  const newColumnBtn = target.closest('.column.new') as HTMLDivElement
+  const deleteColumnBtn = target.closest<HTMLDivElement>(
+    '.action-btn.delete-column-btn'
+  )
+  const newColumnBtn = target.closest<HTMLDivElement>('.column.new')
 
   if (deleteColumnBtn) {
     const columnElm = deleteColumnBtn.closest('.column') as HTMLElement
@@ -149,4 +152,63 @@ window.addEventListener('click', async (e) => {
   } else if (newColumnBtn) {
     onClickNewColumnBtn(newColumnBtn)
   }
+})
+
+window.addEventListener('dblclick', (e) => {
+  const target = e.target as HTMLElement
+
+  const columnNameElm = target.closest<HTMLDivElement>('.column-name')
+
+  if (!columnNameElm) {
+    return
+  }
+
+  columnNameElm.contentEditable = 'true'
+
+  const originalName = columnNameElm.textContent
+
+  const sel = window.getSelection()
+  const range = document.createRange()
+  range.setStart(columnNameElm.firstChild, 0)
+  range.setEnd(columnNameElm.firstChild, originalName.length)
+  sel.removeAllRanges()
+  sel.addRange(range)
+
+  columnNameElm.addEventListener('blur', async function bc() {
+    columnNameElm.removeEventListener('blur', bc)
+
+    columnNameElm.removeAttribute('contenteditable')
+
+    const newName = columnNameElm.textContent.trim()
+
+    if (newName === originalName) {
+      columnNameElm.innerHTML = newName
+      return
+    }
+
+    const columnElm = columnNameElm.closest('.column') as HTMLElement
+    const [boardId, columnId] = getElementIds(columnNameElm)
+
+    await modifyColumn({
+      boardId,
+      columnId,
+      data: {
+        name: columnNameElm.textContent,
+        previousColumnId:
+          parseInt(
+            columnElm.previousElementSibling?.getAttribute('data-column-id')
+          ) || null,
+      },
+    })
+  })
+
+  columnNameElm.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      columnNameElm.blur()
+    } else if (e.key === 'Escape') {
+      columnNameElm.innerHTML = originalName
+      columnNameElm.blur()
+    }
+  })
 })

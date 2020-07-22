@@ -5,6 +5,6 @@ import './scripts/card-dnd'
 import './scripts/column-dnd'
 
 import './scripts/init.ts'
-
 import './scripts/column.ts'
 import './scripts/card.ts'
+import './scripts/activity.ts'

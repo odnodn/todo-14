@@ -25,8 +25,8 @@ export type GetBoardDataResponseData = {
   }
 }
 
-function mapSort<T extends []>(linkedList: T, previousKey: string): T {
-  const sortedList = [] as T
+export function mapSort<T>(linkedList: T[], previousKey: string): T[] {
+  const sortedList = [] as T[]
   const map = new Map()
   let currentId = null
 
@@ -72,20 +72,22 @@ router.get('/board/:boardId', async ({ params }, res) => {
     return
   }
 
-  const columns = (await query(
-    `SELECT id, name, previousColumnId, createdAt from \`column\` WHERE boardId=${escape(
-      boardId
-    )} AND isDeleted=0`
-  )) as []
+  const columns = (await query(`
+    SELECT id, name, previousColumnId, createdAt
+    FROM \`column\`
+    WHERE boardId = ${escape(boardId)}
+    AND isDeleted = 0
+  `)) as []
 
   const sortedColumns = mapSort(columns, 'previousColumnId')
 
   for (const column of sortedColumns) {
-    const cards = (await query(
-      `SELECT id, content, icon, previousCardId, createdAt, editedAt from card WHERE columnId=${
-        (column as any).id
-      } AND isDeleted=0`
-    )) as []
+    const cards = (await query(`
+      SELECT id, content, icon, previousCardId, createdAt, editedAt
+      FROM card
+      WHERE columnId=${(column as any).id}
+      AND isDeleted = 0
+    `)) as []
 
     const sortedCards = mapSort(cards, 'previousCardId')
 
