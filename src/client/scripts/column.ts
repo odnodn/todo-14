@@ -44,6 +44,7 @@ function onClickNewColumnBtn(newColumnBtn: HTMLElement) {
       ? null
       : parseInt(lastColumn.getAttribute('data-column-id'))
 
+  // Create a column API
   fetch(`/board/${boardId}`, {
     method: 'POST',
     headers: {
@@ -51,7 +52,6 @@ function onClickNewColumnBtn(newColumnBtn: HTMLElement) {
     },
     body: JSON.stringify({
       name: columnNameElm.textContent,
-      previousColumnId,
     }),
   })
     .then((res) => {

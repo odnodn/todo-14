@@ -4,6 +4,7 @@ import { MysqlInsertOrUpdateResult } from '@/types/query'
 import { escape } from '../modules/escape'
 import express from 'express'
 import { query } from '../modules/query'
+import { mapSort } from './get-a-board-data'
 
 const router = express.Router()
 
@@ -13,21 +14,15 @@ export type CreateColumnRequestParams = {
 
 export type CreateColumnRequestBody = {
   name: string
-  previousColumnId: number
 }
 
 router.post('/board/:boardId', async (req, res) => {
   const boardId = parseInt(req.params.boardId)
   const name = req.body.name
-  const previousColumnId = parseInt(req.body.previousColumnId) || null
 
   // If one or many of the requested data are missing,
   // consider the request as a bad request
-  if (
-    !boardId ||
-    !(name && name.length > 0 && name.trim().length > 0) ||
-    (previousColumnId !== null && typeof previousColumnId !== 'number')
-  ) {
+  if (!boardId || !(name && name.length > 0 && name.trim().length > 0)) {
     res.sendStatus(400)
 
     return
@@ -48,12 +43,26 @@ router.post('/board/:boardId', async (req, res) => {
 
   // TODO: Check if the board is owned by the user in the session
 
+  const columns = await query<Column[]>(`
+    SELECT * FROM \`column\`
+    WHERE
+    boardId = ${escape(boardId)}
+    AND
+    isDeleted = 0
+  `)
+
+  const sortedColumns = mapSort(columns, 'previousColumnId')
+
+  const lastColumn = sortedColumns[sortedColumns.length - 1]
+
   // Insert the column to the table
   const { insertId } = await query<MysqlInsertOrUpdateResult>(`
     INSERT INTO \`column\`
     (boardId, name, previousColumnId)
     VALUES
-    (${escape(boardId)}, ${escape(name)}, ${escape(previousColumnId)})
+    (${escape(boardId)}, ${escape(name)}, ${
+    lastColumn ? escape(lastColumn.id) : 'NULL'
+  })
   `)
 
   const [column] = await query<Column[]>(
