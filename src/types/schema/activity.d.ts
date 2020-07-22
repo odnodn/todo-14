@@ -5,4 +5,6 @@ export type Activity = {
   columnId?: number
   cardId?: number
   occurredAt?: string
+  from?: string
+  to?: string
 }

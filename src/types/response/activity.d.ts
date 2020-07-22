@@ -7,4 +7,6 @@ export type Activity = {
   column: Column | null
   card: Card | null
   occurredAt: string
+  from: string
+  to: string
 }
