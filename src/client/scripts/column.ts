@@ -25,6 +25,10 @@ async function modifyColumn({
 }
 
 function onClickNewColumnBtn(newColumnBtn: HTMLElement) {
+  const columnsContainer = newColumnBtn.closest('.columns-container')
+  columnsContainer.scrollLeft =
+    columnsContainer.scrollWidth - columnsContainer.clientWidth
+
   const newColumnElm = generateColumn({ id: 0, name: 'untitled column' })
 
   newColumnElm.className = 'column'

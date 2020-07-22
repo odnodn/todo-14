@@ -1,3 +1,16 @@
+body {
+  &.hovered {
+    user-select: none;
+  }
+
+  &.hovered {
+    .actions,
+    .card {
+      pointer-events: none !important;
+    }
+  }
+}
+
 .app {
   position: fixed;
   top: 0;
@@ -44,8 +57,10 @@ $elm-padding: 19px;
   padding-bottom: 25px;
   flex: 1;
   overflow-x: auto;
+  scroll-behavior: smooth;
   white-space: nowrap;
   display: flex;
+  position: relative;
 
   .column {
     position: relative;
@@ -63,6 +78,8 @@ $elm-padding: 19px;
     flex-direction: column;
     overflow-y: auto;
     height: 100%;
+
+    transition: transform 200ms ease;
 
     .column-header {
       z-index: 3;
@@ -114,6 +131,12 @@ $elm-padding: 19px;
       opacity: 1;
       transform: scale(1);
       pointer-events: all;
+    }
+
+    &.placeholder {
+      background-color: var(--white);
+      opacity: 0.7;
+      box-shadow: none;
     }
 
     .cards-container {

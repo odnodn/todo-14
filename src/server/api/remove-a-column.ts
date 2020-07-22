@@ -1,8 +1,8 @@
-import { Card, Column } from '@/types/schema'
-
+import { Column, Card } from '@/types/schema'
 import { escape } from '../modules/escape'
 import express from 'express'
 import { query } from '../modules/query'
+import { connection } from '../modules/connection'
 
 const router = express.Router()
 
@@ -23,55 +23,54 @@ router.delete('/board/:boardId/column/:columnId', async ({ params }, res) => {
     `SELECT * FROM \`column\` WHERE id=${escape(columnId)}`
   )
 
-  const previousColumnId = column.previousColumnId
+  if (!column) {
+    res.sendStatus(404)
+    return
+  }
 
-  const [nextColumn] = await query<Column[]>(
-    `SELECT * FROM \`column\` WHERE previousColumnId=${escape(columnId)}`
-  )
+  connection.beginTransaction(async (err) => {
+    if (err) throw err
 
-  // TODO: transaction
+    await query(`
+      UPDATE \`column\` SET isDeleted=1, previousColumnId=null
+      WHERE id=${escape(columnId)}
+      `)
 
-  // Transfer the preivous column ID to the next column if exists
-  if (nextColumn) {
     await query(`
       UPDATE \`column\`
       SET
-      previousColumnId=${previousColumnId}
+      previousColumnId=${column.previousColumnId}
       WHERE
-      id=${escape(nextColumn.id)}
-    `)
-  }
+      previousColumnId=${escape(columnId)}
+      `)
 
-  const cards = await query<Card[]>(`
+    const cards = await query<Card[]>(`
     SELECT *
     FROM card
     WHERE columnId = ${escape(columnId)}
   `)
 
-  if (cards.length > 0) {
-    let removeCardsQuery = ''
+    if (cards.length > 0) {
+      let removeCardsQuery = ''
 
-    cards.forEach((card) => {
-      removeCardsQuery += `
+      cards.forEach((card) => {
+        removeCardsQuery += `
       UPDATE card
       SET isDeleted = 1
       WHERE id = ${escape(card.id)};
     `
+      })
+
+      await query(removeCardsQuery)
+    }
+
+    connection.commit((err) => {
+      if (err) {
+        res.sendStatus(500)
+        return connection.rollback(() => {})
+      }
     })
-
-    await query(removeCardsQuery)
-  }
-
-  // TODO: Check user ownership
-  const removeColumnQuery = `
-    UPDATE \`column\`
-    SET
-    isDeleted=1
-    WHERE
-    id=${escape(columnId)}
-  `
-
-  await query(removeColumnQuery)
+  })
 
   res.sendStatus(200)
 })
