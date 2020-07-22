@@ -1,5 +1,5 @@
-import { escape } from '../modules/escape'
 import express from 'express'
+import { escape } from '../modules/escape'
 import { query } from '../modules/query'
 
 const router = express.Router()
@@ -97,7 +97,7 @@ router.get('/board/:boardId', async ({ params }, res) => {
   const responseData: GetBoardDataResponseData = {
     board: {
       ...board,
-      columns,
+      columns: sortedColumns,
     },
   }
 
