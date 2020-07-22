@@ -2,6 +2,7 @@ import { Column } from '@/types/schema'
 import { escape } from '../modules/escape'
 import express from 'express'
 import { query } from '../modules/query'
+import { connection } from '../modules/connection'
 
 const router = express.Router()
 
@@ -22,32 +23,34 @@ router.delete('/board/:boardId/column/:columnId', async ({ params }, res) => {
     `SELECT * FROM \`column\` WHERE id=${escape(columnId)}`
   )
 
-  const previousColumnId = column.previousColumnId
+  if (!column) {
+    res.sendStatus(404)
+    return
+  }
 
-  const [nextColumn] = await query<Column[]>(
-    `SELECT * FROM \`column\` WHERE previousColumnId=${escape(columnId)}`
-  )
+  connection.beginTransaction(async (err) => {
+    if (err) throw err
 
-  // TODO: transaction
+    await query(`
+      UPDATE \`column\` SET isDeleted=1, previousColumnId=null
+      WHERE id=${escape(columnId)}
+      `)
 
-  if (nextColumn) {
     await query(`
       UPDATE \`column\`
       SET
-      previousColumnId=${previousColumnId}
+      previousColumnId=${column.previousColumnId}
       WHERE
-      id=${escape(nextColumn.id)}
-    `)
-  }
+      previousColumnId=${escape(columnId)}
+      `)
 
-  // TODO: Check user ownership
-  const sql = `
-    DELETE FROM \`column\`
-    WHERE
-    id=${escape(columnId)}
-  `
-
-  await query(sql)
+    connection.commit((err) => {
+      if (err) {
+        res.sendStatus(500)
+        return connection.rollback(() => {})
+      }
+    })
+  })
 
   res.sendStatus(200)
 })
