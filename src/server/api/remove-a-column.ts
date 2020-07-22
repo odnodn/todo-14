@@ -3,6 +3,7 @@ import { escape } from '../modules/escape'
 import express from 'express'
 import { query } from '../modules/query'
 import { connection } from '../modules/connection'
+import { createActivity } from '../modules/create-an-activity'
 
 const router = express.Router()
 
@@ -63,6 +64,13 @@ router.delete('/board/:boardId/column/:columnId', async ({ params }, res) => {
 
       await query(removeCardsQuery)
     }
+
+    // Create an activity after a removal
+    await createActivity({
+      type: 'delete',
+      boardId,
+      columnId,
+    })
 
     connection.commit((err) => {
       if (err) {
