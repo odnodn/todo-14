@@ -3,8 +3,13 @@ import { Card } from './card'
 
 export type Activity = {
   id: number
-  type: 'card' | 'column'
+  type: ActivityType
+  boardId: number
   column: Column | null
   card: Card | null
   occurredAt: string
+  from: string
+  to: string
 }
+
+export type ActivityType = 'add' | 'delete' | 'modify' | 'move'

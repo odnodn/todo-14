@@ -45,7 +45,9 @@ window.addEventListener('pointerdown', (e) => {
     placeholder.style.position = 'absolute'
     placeholder.style.left = '0px'
     placeholder.style.margin = '0px'
-    placeholder.style.transform = `translate3d(${columnRect.left}px, 0, 0)`
+    placeholder.style.transform = `translate3d(${
+      document.querySelector('.columns-container').scrollLeft + columnRect.left
+    }px, 0, 0)`
 
     // Prepend placeholder
     originalColumn.parentElement.prepend(placeholder)
