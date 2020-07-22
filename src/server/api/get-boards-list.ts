@@ -24,11 +24,6 @@ router.get('/board', async (req, res) => {
       WHERE u.id=${userId}`
   )
 
-  if (!boards.length) {
-    res.sendStatus(404)
-    return
-  }
-
   const result: GetBoardsListResponseData = { boards }
   res.json(result)
 })
