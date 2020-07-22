@@ -18,7 +18,6 @@ window.addEventListener('click', function cc(e) {
   }
 
   if (!target.closest('.activity-jumbo') && !target.closest('.activity-btn')) {
-    console.log('here')
     activityJumbo.classList.add('hidden')
   }
 })
