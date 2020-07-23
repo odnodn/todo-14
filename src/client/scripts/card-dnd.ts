@@ -428,10 +428,14 @@ window.addEventListener('pointerdown', (e) => {
               allCards[allCards.length - 1]?.getAttribute('data-card-id')
             ) || null
         }
-
+        const app = document.querySelector('.app')
+        const boardId = parseInt(app.getAttribute('data-board-id')) || 1
         if (previousCardId !== cardId) {
           // Update card data using API
           modifyCardsOrderAPI({
+            urlParam: {
+              boardId,
+            },
             bodyParam: {
               cardId,
               columnId,

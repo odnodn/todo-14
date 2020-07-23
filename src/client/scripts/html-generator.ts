@@ -104,3 +104,22 @@ export const generateEditCardForm = ({
 
   return generateElement(newCardForm)
 }
+
+export const generateActivity = ({
+  iconName,
+  content,
+}: {
+  iconName: string
+  content: string
+}): HTMLElement => {
+  const activity = `
+    <div class="activity">
+      <div class="icon-wrapper">
+        <i class="icon">${iconName}</i>
+      </div>
+      <div class="content">${content}</div>
+    </div>
+    `
+
+  return generateElement(activity)
+}

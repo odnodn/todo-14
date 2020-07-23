@@ -11,5 +11,6 @@ export const createActivity = async (param: {
   const { insertId } = await query<MysqlInsertOrUpdateResult>(`
     INSERT INTO activity (\`type\`, boardId, content)
     VALUES (${escape(type)}, ${escape(boardId)}, ${escape(content)})`)
+
   return insertId
 }

@@ -30,6 +30,7 @@ const createCardFormHandler = ({ columnElm }: Pick<CardData, 'columnElm'>) => {
   const textAreaElm = newCardFormElm.querySelector('textarea')
 
   cardContainerElem.prepend(newCardFormElm)
+  textAreaElm.focus()
   eventCollector.add(textAreaElm, 'keyup', textAreaKeyupHandler)
 }
 
