@@ -164,11 +164,28 @@ async function dndColumn() {
   await wait(1500)
   video.play()
   video.onended = () => {
-    darkMode()
+    mobile()
   }
 }
 
-async function mobile() {}
+async function mobile() {
+  hideText()
+  await wait(1000)
+  hideVideo()
+  await wait(700)
+  videoWrapper.removeAttribute('style')
+  textContainer.removeAttribute('style')
+  videoSource.setAttribute('src', './videos/mobile.mov')
+  video.load()
+  updateText([' Mobile Support', 'Work in progress'])
+  await wait(500)
+  showVideo()
+  await wait(1000)
+  video.play()
+  video.onended = () => {
+    darkMode()
+  }
+}
 
 async function darkMode() {
   hideText()
