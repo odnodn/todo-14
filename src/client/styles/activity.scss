@@ -82,6 +82,10 @@
       margin-bottom: 15px;
       position: relative;
 
+      &:first-child {
+        margin-top: 10px;
+      }
+
       &:before {
         content: '';
         position: absolute;
