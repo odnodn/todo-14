@@ -210,7 +210,6 @@ window.addEventListener('pointerdown', (e) => {
         const idx = Array.from(originalColumn.parentNode.children).findIndex(
           (el) => parseInt(el.getAttribute('to-index')) === toIdx - 1
         )
-        console.log(idx)
 
         modifyColumn({
           boardId: 1,
