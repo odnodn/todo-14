@@ -3,6 +3,7 @@ import { generateElement, generateColumn, generateCard } from './html-generator'
 import { getBoardListAPI } from '@/client/api/get-boards-list'
 import { getABoardDataAPI } from '@/client/api/get-a-board-data'
 import { GetBoardDataResponseData } from '@/server/api/get-a-board-data'
+import { updateAllColumnsBadgeCount } from '../modules/update-column-badge-count'
 
 const setBoardName = (id: number, name: string) => {
   const appElm = document.querySelector('.app') as HTMLElement
@@ -59,6 +60,8 @@ const init = async () => {
 
   setBoardName(boardData.id, boardData.name)
   render(boardData)
+
+  updateAllColumnsBadgeCount()
 }
 
 init()
