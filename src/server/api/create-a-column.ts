@@ -60,9 +60,7 @@ router.post('/board/:boardId', async (req, res) => {
     INSERT INTO \`column\`
     (boardId, name, previousColumnId)
     VALUES
-    (${escape(boardId)}, ${escape(name)}, ${
-    lastColumn ? escape(lastColumn.id) : 'NULL'
-  })
+    (${escape(boardId)}, ${escape(name)}, ${escape(lastColumn?.id)})
   `)
 
   const [column] = await query<Column[]>(

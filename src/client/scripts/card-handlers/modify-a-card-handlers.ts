@@ -33,7 +33,12 @@ const editCardFormHandler = ({
 
   cardElm.classList.add('hide')
 
-  const textAreaElm = editCardFormElm.querySelector('textarea')
+  const textAreaElm = editCardFormElm.querySelector<HTMLTextAreaElement>(
+    'textarea'
+  )
+
+  textAreaElm.select()
+
   eventCollector.add(textAreaElm, 'keyup', textAreaKeyupHandler)
 }
 

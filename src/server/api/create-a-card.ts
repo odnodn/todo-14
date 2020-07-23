@@ -2,10 +2,12 @@ import express from 'express'
 
 import { escape } from '../modules/escape'
 import { query } from '@/server/modules/query'
+import { createActivity } from '@/server/modules/create-an-activity'
 
 import { MysqlInsertOrUpdateResult } from '@/types/query'
 import { Card as CardReponse } from '@/types/response'
-import { Card as CardSchema, User as UserSchema } from '@/types/schema'
+import { Card as CardSchema, User as UserSchema, Column } from '@/types/schema'
+import { getCardTitle } from '@/client/utils/content-parser'
 
 const router = express.Router()
 
@@ -44,7 +46,10 @@ const composeCardResponse = (
 
 router.post('/board/:boardId/column/:columnId/card', async (req, res) => {
   const { content } = req.body as CreateCardRequestBody
-  const { columnId } = (req.params as unknown) as CreateCardRequestParams
+  const {
+    boardId,
+    columnId,
+  } = (req.params as unknown) as CreateCardRequestParams
   if (!content) {
     res.sendStatus(404)
     return
@@ -58,7 +63,7 @@ router.post('/board/:boardId/column/:columnId/card', async (req, res) => {
   >(`INSERT INTO card (columnId, userId, content)
   VALUES(${escape(columnId)}, ${escape(userId)}, ${escape(content)} )`)
 
-  const { affectedRows } = await query<MysqlInsertOrUpdateResult>(
+  await query<MysqlInsertOrUpdateResult>(
     `UPDATE card SET previousCardId=${escape(insertId)} WHERE columnId=${escape(
       columnId
     )} AND ISNULL(previousCardId) AND id<>${escape(insertId)}`
@@ -68,11 +73,20 @@ router.post('/board/:boardId/column/:columnId/card', async (req, res) => {
     `SELECT * FROM card WHERE id=${escape(insertId)}`
   )
 
+  const [column] = await query<Column[]>(
+    `SELECT * FROM \`column\` WHERE id=${escape(columnId)}`
+  )
+
   const [user] = await query<UserSchema[]>(
     `SELECT * FROM user WHERE id=${escape(userId)}`
   )
 
-  // TODO: insert activity
+  const cardTitle = getCardTitle(card.content)
+  createActivity({
+    type: 'add',
+    boardId,
+    content: `<<${cardTitle}>>가 [[${column.name}]]에 추가되었습니다.`,
+  })
 
   if (!card || !user) {
     res.sendStatus(500)

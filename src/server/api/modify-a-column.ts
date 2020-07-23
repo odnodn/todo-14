@@ -1,5 +1,4 @@
 import { Column } from '@/types/schema'
-import { MysqlInsertOrUpdateResult } from '@/types/query'
 import { escape } from '../modules/escape'
 import express from 'express'
 import { query } from '../modules/query'
@@ -69,41 +68,51 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
     }
   }
 
-  const [columnPointingMe] = await query<Column[]>(`
-    SELECT * FROM \`column\`
-    WHERE
-    previousColumnId = ${escape(column.id)}
-  `)
+  const shouldUpdateOrder = previousColumnId !== undefined
 
   connection.beginTransaction(async (err) => {
     if (err) throw err
 
     try {
-      if (columnPointingMe) {
-        // Update card which was pointing me
+      if (shouldUpdateOrder) {
         await query(`
-          UPDATE \`column\`
-          SET
+          UPDATE \`column\` SET
           previousColumnId = ${escape(column.previousColumnId)}
           WHERE
-          id = ${escape(columnPointingMe.id)}
+          previousColumnId = ${escape(column.id)}
         `)
 
-        // Update card which was pointing the card
-        // which will be newly pointed by me
-        await query(`
-          UPDATE \`column\`
-          SET
-          previousColumnId = ${escape(column.id)}
-          WHERE
-          previousColumnId = ${columnPointingMe.id}
-        `)
+        if (previousColumnId) {
+          await query(`
+            UPDATE \`column\` SET
+            previousColumnId = ${escape(column.id)}
+            WHERE
+            previousColumnId = ${escape(previousColumnId)}
+          `)
+        } else {
+          await query(`
+            UPDATE \`column\` SET
+            previousColumnId = ${escape(column.id)}
+            WHERE
+            ISNULL(previousColumnId)
+            AND
+            boardId = ${escape(boardId)}
+          `)
+        }
       }
+
       // Update mine
       await query(`
         UPDATE \`column\`
         SET
-        previousColumnId = ${escape(previousColumnId)}
+        ${name ? `name = ${escape(name)}` : ''}
+        ${
+          shouldUpdateOrder
+            ? `${name ? ',' : ''} previousColumnId = ${escape(
+                previousColumnId
+              )}`
+            : ''
+        }
         WHERE
         id = ${escape(column.id)}
       `)
