@@ -8,3 +8,5 @@ import './scripts/init.ts'
 import './scripts/column.ts'
 import './scripts/card.ts'
 import './scripts/activity.ts'
+
+import './scripts/color-scheme.ts'
