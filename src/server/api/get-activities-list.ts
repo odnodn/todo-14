@@ -32,7 +32,7 @@ router.get('/board/:boardId/activity', async (req, res) => {
   const activities = await query<Activity[]>(
     `SELECT * FROM activity WHERE boardId=${escape(
       boardId
-    )} ${additionalOption} ORDER BY id DESC LIMIT 10`
+    )} ${additionalOption} ORDER BY id DESC LIMIT 20`
   )
 
   const responseData: GetActivitiesListResponseData = { activities }
