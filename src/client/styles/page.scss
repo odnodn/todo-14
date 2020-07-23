@@ -38,14 +38,19 @@ body {
     position: absolute;
     left: 32px;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translateY(-12px);
 
     .icon {
       font-size: 27px;
+      transition: transform 250ms ease, opacity 250ms ease;
+      position: absolute;
+      top: 0;
+      left: 0;
 
       &.sun {
         color: #fcb738;
-        display: none;
+        transform: scale(0.3);
+        opacity: 0;
       }
 
       &.moon {
@@ -54,11 +59,14 @@ body {
 
       @include dark-mode {
         &.sun {
-          display: block;
+          transform: scale(1);
+          opacity: 1;
         }
 
         &.moon {
-          display: none;
+          // display: none;
+          transform: scale(0.3);
+          opacity: 0;
         }
       }
     }
