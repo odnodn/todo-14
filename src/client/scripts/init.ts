@@ -1,8 +1,16 @@
-import { generateElement, generateColumn, generateCard } from './html-generator'
+import {
+  generateElement,
+  generateColumn,
+  generateCard,
+  generateActivity,
+} from './html-generator'
 
 import { getBoardListAPI } from '@/client/api/get-boards-list'
 import { getABoardDataAPI } from '@/client/api/get-a-board-data'
+import { getActivitiesListAPI } from '../api/get-activities-list'
+
 import { GetBoardDataResponseData } from '@/server/api/get-a-board-data'
+import { ActivityType, Activity } from '@/types/response'
 
 const setBoardName = (id: number, name: string) => {
   const appElm = document.querySelector('.app') as HTMLElement
@@ -50,6 +58,36 @@ const render = (board: GetBoardDataResponseData['board']) => {
   app.appendChild(containerElm)
 }
 
+const getActivityIconsName = (type: ActivityType): string => {
+  switch (type) {
+    case 'add':
+      return 'plus_circle_fill'
+    case 'delete':
+      return 'minus_circle_fill'
+    case 'modify':
+      return 'pencil_circle_fill'
+    case 'move':
+      return 'arrow_right_arrow_left_circle_fill'
+  }
+}
+
+const renderActivities = (activities: Activity[]) => {
+  const activitiesContainerElm = generateElement(
+    `<div class="activity-container"></div>`
+  )
+
+  activities.forEach((act) => {
+    const { type, content } = act
+    const iconName = getActivityIconsName(type)
+    const actElm = generateActivity({ iconName, content })
+
+    activitiesContainerElm.appendChild(actElm)
+  })
+
+  const sidebarElm = document.querySelector('.activity-sidebar')
+  sidebarElm.appendChild(activitiesContainerElm)
+}
+
 const init = async () => {
   const boards = await getBoardListAPI()
   if (!boards?.length) return
@@ -57,8 +95,13 @@ const init = async () => {
   const boardData = await getABoardDataAPI(boards[0].id)
   if (!boardData) return
 
+  const activities = await getActivitiesListAPI({
+    urlParam: { boardId: 1 },
+  })
+
   setBoardName(boardData.id, boardData.name)
   render(boardData)
+  renderActivities(activities)
 }
 
 init()
