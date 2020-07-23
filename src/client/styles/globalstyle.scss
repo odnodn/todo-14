@@ -2,9 +2,13 @@
 @use './icons' as *;
 @use './activity' as *;
 
-:root {
+@use './mixins' as *;
+
+:root,
+html.light-mode {
   // Colors
   --white: #ffffff;
+  --card-white: #fff;
   --alt-black: #444444;
   --light-blue: #eff1f3;
   --super-light-blue: #f5f5f7;
@@ -23,12 +27,30 @@
   --baemin-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
   --todo-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
   --activity-item-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+
+  // Transition
+  --scheme-trans: background-color 800ms ease;
+}
+
+html.dark-mode {
+  --white: #333;
+  --card-white: #454545;
+  --alt-black: #f8f8f8;
+  --light-blue: #000;
+  --super-light-blue: #222;
+  --baemint: #1febe4;
+  --red: #f55369;
+  --gray: #b7b7b7;
+
+  --todo-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
 }
 
 body {
   font-family: 'PAYW Pro', 'PAYW Pro KR', sans-serif;
   background-color: var(--light-blue);
   color: var(--alt-black);
+
+  transition: var(--scheme-trans), color 800ms ease;
 }
 
 * {
