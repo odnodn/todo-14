@@ -38,18 +38,32 @@ body {
     position: absolute;
     left: 32px;
     top: 50%;
-    transform: translateY(-12px);
+    transform: translateY(-50%);
+    border-radius: 10px;
+    transition: background-color 200ms ease, transform 200ms ease;
+    width: 40px;
+    height: 40px;
+
+    &:hover {
+      background-color: var(--white);
+    }
+
+    &:active {
+      transform: scale(0.95) translateY(-50%);
+    }
 
     .icon {
       font-size: 27px;
-      transition: transform 250ms ease, opacity 250ms ease;
+      transition: transform 250ms ease, opacity 250ms ease, var(--scheme-trans);
       position: absolute;
-      top: 0;
-      left: 0;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50%);
+      transform-origin: center;
 
       &.sun {
         color: #fcb738;
-        transform: scale(0.3);
+        transform: scale(0.3) translateX(-50%) translateY(-50%);
         opacity: 0;
       }
 
@@ -59,13 +73,13 @@ body {
 
       @include dark-mode {
         &.sun {
-          transform: scale(1);
+          transform: scale(1) translateX(-50%) translateY(-50%);
           opacity: 1;
         }
 
         &.moon {
           // display: none;
-          transform: scale(0.3);
+          transform: scale(0.3) translateX(-50%) translateY(-50%);
           opacity: 0;
         }
       }
@@ -75,6 +89,7 @@ body {
   .board-name {
     font-size: 20px;
     font-weight: 600;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   }
 
   .activity-btn {
@@ -82,10 +97,27 @@ body {
     right: 32px;
     top: 50%;
     transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    transition: background-color 200ms ease, transform 200ms ease,
+      var(--scheme-trans);
+
+    &:hover {
+      background-color: var(--white);
+    }
+
+    &:active {
+      transform: scale(0.95) translateY(-50%);
+    }
 
     .icon {
       font-size: 27px;
-      color: var(--alt-black);
+      color: var(--orange);
+      line-height: 1;
     }
   }
 }
