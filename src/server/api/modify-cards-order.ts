@@ -1,5 +1,5 @@
 import { query } from '@/server/modules/query'
-import { Card } from '@/types/schema'
+import { Card, Column } from '@/types/schema'
 import express from 'express'
 import { escape } from '../modules/escape'
 import { getCardTitle } from '@/client/utils/content-parser'
@@ -24,6 +24,30 @@ router.put('/board/:boardId/order', async (req, res) => {
     previousCardId,
   } = req.body as ModifyCardOrderRequestBody
   const { boardId } = (req.params as unknown) as ModifyCardOrderRequestParams
+
+  const [card] = await query<Card[]>(`
+    SELECT * FROM card WHERE id=${escape(cardId)} AND isDeleted=0
+    `)
+
+  const [column] = await query<Column[]>(`
+    SELECT * FROM \`column\` WHERE id=${escape(columnId)} AND isDeleted=0
+    `)
+
+  if (!card || !column) {
+    res.sendStatus(400)
+    return
+  }
+
+  if (previousCardId) {
+    const [prevCard] = await query<Card[]>(`
+  SELECT * FROM card WHERE id=${escape(previousCardId)} AND isDeleted=0
+  `)
+
+    if (!prevCard) {
+      res.sendStatus(400)
+      return
+    }
+  }
 
   try {
     const [targetCard] = await query<Card[]>(
