@@ -70,9 +70,7 @@ router.put(
     }
 
     if (prevBody !== body) {
-      activityContents.push(
-        `카드 내용이 <<${prevCardTitle}>>에서 <<${cardTitle}>>로`
-      )
+      activityContents.push(`카드 내용이 <<${prevBody}>>에서 <<${body}>>로`)
     }
 
     createActivity({
