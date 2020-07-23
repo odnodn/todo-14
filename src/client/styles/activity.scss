@@ -81,6 +81,8 @@
       padding: 15px;
       margin-bottom: 15px;
       position: relative;
+      display: flex;
+      flex-direction: row;
 
       &:first-child {
         margin-top: 10px;
@@ -104,8 +106,33 @@
         transition: var(--scheme-trans);
       }
 
-      .icon {
-        font-size: 25px;
+      .icon-wrapper {
+        margin-right: 13px;
+
+        &.create {
+          color: var(--baemint);
+        }
+
+        &.delete {
+          color: var(--red);
+        }
+
+        &.modify {
+          color: var(--orange);
+        }
+
+        &.move {
+          color: var(--blue);
+        }
+
+        .icon {
+          font-size: 25px;
+        }
+      }
+
+      .content {
+        font-size: 16px;
+        line-height: 1.4;
       }
     }
   }

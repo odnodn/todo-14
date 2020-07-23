@@ -112,9 +112,20 @@ export const generateActivity = ({
   iconName: string
   content: string
 }): HTMLElement => {
+  const cardIconClassName =
+    iconName === 'plus_circle_fill'
+      ? 'create'
+      : iconName === 'minus_circle_fill'
+      ? 'delete'
+      : iconName === 'pencil_circle_fill'
+      ? 'modify'
+      : iconName === 'arrow_right_arrow_left_circle_fill'
+      ? 'move'
+      : ''
+
   const activity = `
     <div class="activity">
-      <div class="icon-wrapper">
+      <div class="icon-wrapper ${cardIconClassName}">
         <i class="icon">${iconName}</i>
       </div>
       <div class="content">${content}</div>
