@@ -38,13 +38,20 @@ router.put(
 
     // icon, previousCardId는 not null이 아니기 때문에 제외
     if (!content || !columnId) {
-      res.sendStatus(404)
+      res.sendStatus(400)
       return
     }
 
     const [card] = await query<Card[]>(
-      `SELECT * FROM card WHERE id=${escape(cardId)}`
+      `SELECT * FROM card WHERE id=${escape(cardId)} AND columnId=${escape(
+        columnId
+      )} AND isDeleted=0`
     )
+
+    if (!card) {
+      res.sendStatus(400)
+      return
+    }
 
     const { affectedRows } = await query<MysqlInsertOrUpdateResult>(`UPDATE card
     SET content="${content}", icon="${icon}", columnId=${columnId}, previousCardId=${previousCardId}
@@ -73,7 +80,7 @@ router.put(
     })
 
     if (!affectedRows) {
-      res.sendStatus(404)
+      res.sendStatus(400)
       return
     }
 
