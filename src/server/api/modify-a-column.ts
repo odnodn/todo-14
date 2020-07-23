@@ -142,7 +142,7 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
         await createActivity({
           type: 'modify',
           boardId,
-          content: `컬럼의 제목이 [[${column.name}]]에서 [[${newName}]]로 수정되었습니다.`,
+          content: `컬럼의 이름이 [[${column.name}]]에서 [[${newName}]]로 수정되었습니다.`,
         })
       } else if (shouldUpdateOrder) {
         if (previousColumnId !== column.previousColumnId) {
