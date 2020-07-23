@@ -259,6 +259,7 @@ $elm-padding: 19px;
         box-shadow: var(--todo-shadow);
         border-radius: var(--card-radius);
         white-space: initial;
+        word-break: break-all;
 
         margin-bottom: 15px;
 
@@ -269,7 +270,7 @@ $elm-padding: 19px;
         }
 
         &:hover {
-          transform: scale(1.02);
+          transform: scale(1.015);
         }
 
         &:active {
@@ -277,9 +278,19 @@ $elm-padding: 19px;
           box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
         }
 
+        .card-icon {
+          font-size: 18px;
+          color: var(--blue);
+          position: absolute;
+          top: 16px;
+          left: 13px;
+        }
+
         .card-title {
           font-size: 16px;
           font-weight: 500;
+          margin-left: 25px;
+          margin-right: 17px;
         }
 
         .card-body {

@@ -47,6 +47,7 @@ export const generateCard = ({
 
   const cardHtml = `
   <div class="card" data-card-id="${id}">
+    <i class="icon card-icon">rectangle_on_rectangle_angled</i>
     <h1 class="card-title">${title}</h1>
     <p class="card-body">${body}</p>
     <button class="delete-card-btn">
