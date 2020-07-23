@@ -51,7 +51,7 @@ router.post('/board/:boardId/column/:columnId/card', async (req, res) => {
     columnId,
   } = (req.params as unknown) as CreateCardRequestParams
   if (!content) {
-    res.sendStatus(404)
+    res.sendStatus(400)
     return
   }
 

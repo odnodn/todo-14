@@ -25,7 +25,7 @@ router.delete('/board/:boardId/column/:columnId', async ({ params }, res) => {
   )
 
   if (!column) {
-    res.sendStatus(404)
+    res.sendStatus(400)
     return
   }
 

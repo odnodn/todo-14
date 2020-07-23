@@ -31,7 +31,7 @@ router.delete(
     )
 
     if (!card) {
-      res.sendStatus(404)
+      res.sendStatus(400)
       return
     }
 

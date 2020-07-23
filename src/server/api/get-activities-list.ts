@@ -20,7 +20,7 @@ router.get('/board/:boardId/activity', async (req, res) => {
   const { lastSendedActivityId } = req.body
 
   if (!boardId) {
-    res.sendStatus(404)
+    res.sendStatus(400)
     return
   }
 
