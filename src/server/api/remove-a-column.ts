@@ -40,7 +40,7 @@ router.delete('/board/:boardId/column/:columnId', async ({ params }, res) => {
     await query(`
       UPDATE \`column\`
       SET
-      previousColumnId=${column.previousColumnId}
+      previousColumnId=${escape(column.previousColumnId)}
       WHERE
       previousColumnId=${escape(columnId)}
       `)

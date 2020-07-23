@@ -54,7 +54,9 @@ router.put(
     }
 
     const { affectedRows } = await query<MysqlInsertOrUpdateResult>(`UPDATE card
-    SET content="${content}", icon="${icon}", columnId=${columnId}, previousCardId=${previousCardId}
+    SET content=${escape(content)}, icon=${escape(icon)}, columnId=${escape(
+      columnId
+    )}, previousCardId=${escape(previousCardId)}
     WHERE id=${cardId}`)
 
     const [prevCardTitle, prevBody] = parseContent(card.content)

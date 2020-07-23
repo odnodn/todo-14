@@ -3,6 +3,7 @@ import express from 'express'
 import { query } from '@/server/modules/query'
 
 import { Board as BoardResponse } from '@/types/response'
+import { escape } from '../modules/escape'
 
 const router = express.Router()
 
@@ -21,7 +22,7 @@ router.get('/board', async (req, res) => {
     `SELECT b.id, b.name, b.createdAt, o.authority from user u
       JOIN ownership o ON u.id=o.userId
       JOIN board b ON o.boardId=b.id
-      WHERE u.id=${userId}`
+      WHERE u.id=${escape(userId)}`
   )
 
   const result: GetBoardsListResponseData = { boards }

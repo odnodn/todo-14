@@ -85,7 +85,7 @@ router.get('/board/:boardId', async ({ params }, res) => {
     const cards = (await query(`
       SELECT id, content, icon, previousCardId, createdAt, editedAt
       FROM card
-      WHERE columnId=${(column as any).id}
+      WHERE columnId=${escape((column as any).id)}
       AND isDeleted = 0
     `)) as []
 

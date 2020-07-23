@@ -44,7 +44,7 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
   const [column] = await query<Column[]>(`
     SELECT * from \`column\`
     WHERE
-    id=${columnId}
+    id=${escape(columnId)}
     AND
     isDeleted=0
   `)
@@ -63,7 +63,7 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
       await query<Column[]>(`
       SELECT * FROM \`column\`
       WHERE
-      id=${previousColumnId}
+      id=${escape(previousColumnId)}
       AND
       isDeleted = 0
     `)
@@ -84,7 +84,7 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
       await query<Column[]>(`
       SELECT * FROM \`column\`
       WHERE
-      id=${column.previousColumnId}
+      id=${escape(column.previousColumnId)}
       AND
       isDeleted = 0
     `)
