@@ -1,5 +1,6 @@
 import './styles/globalstyle.scss'
 import './styles/page.scss'
+import './styles/mobile.scss'
 
 import './scripts/card-dnd'
 import './scripts/column-dnd'
