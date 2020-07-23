@@ -72,8 +72,8 @@ export const generateNewCardForm = ({
       autocomplete="off"
     >${content}</textarea>
     <div class="buttons">
-      <button class="card-btn add" disabled="true">추가</button>
-      <button class="card-btn cancel">취소</button>
+      <button class="card-btn add" disabled="true">Done</button>
+      <button class="card-btn cancel">Cancel</button>
     </div>
   </div>
   `
@@ -96,8 +96,8 @@ export const generateEditCardForm = ({
       autocomplete="off"
     >${content}</textarea>
     <div class="buttons">
-      <button class="card-btn edit" disabled="true">수정</button>
-      <button class="card-btn cancel">취소</button>
+      <button class="card-btn edit" disabled="true">Done</button>
+      <button class="card-btn cancel">Cancel</button>
     </div>
   </div>
   `
