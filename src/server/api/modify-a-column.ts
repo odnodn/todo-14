@@ -142,20 +142,19 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
         await createActivity({
           type: 'modify',
           boardId,
-          columnId,
-          from: column.name,
-          to: newName,
+          content: `컬럼의 제목이 [[${column.name}]]에서 [[${newName}]]로 수정되었습니다.`,
         })
       } else if (shouldUpdateOrder) {
         if (previousColumnId !== column.previousColumnId) {
           await createActivity({
             type: 'move',
             boardId,
-            columnId,
-            from: `${originalPreviousColumn?.id ?? null},${
-              originalPreviousColumn?.name ?? ''
-            }`,
-            to: `${previousColumn?.id ?? null},${previousColumn?.name ?? ''}`,
+            content: `컬럼이 이동되었습니다.`,
+            // columnId,
+            // from: `${originalPreviousColumn?.id ?? null},${
+            //   originalPreviousColumn?.name ?? ''
+            // }`,
+            // to: `${previousColumn?.id ?? null},${previousColumn?.name ?? ''}`,
           })
         }
       }

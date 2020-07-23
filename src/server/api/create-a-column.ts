@@ -77,7 +77,7 @@ router.post('/board/:boardId', async (req, res) => {
   await createActivity({
     type: 'add',
     boardId,
-    columnId: insertId,
+    content: '컬럼이 추가되었습니다.',
   })
 
   res.json({ column })

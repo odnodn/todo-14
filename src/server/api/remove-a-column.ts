@@ -69,7 +69,8 @@ router.delete('/board/:boardId/column/:columnId', async ({ params }, res) => {
     await createActivity({
       type: 'delete',
       boardId,
-      columnId,
+      content: `[[${column.name}]] 컬럼이 삭제되었습니다.`,
+      // columnId,
     })
 
     connection.commit((err) => {
