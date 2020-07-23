@@ -12,7 +12,8 @@
     "build": "npm run build:client && npm run build:server",
     "open": "wait-on tcp:12100 && open http://localhost:12100",
     "start": "node dist/src/server/main.js",
-    "start:browser": "npm-run-all --parallel start open"
+    "start:browser": "npm-run-all --parallel start open",
+    "pm2:start": "pm2 start npm --name 'todo-14' -- run start"
   },
   "repository": {
     "type": "git",
