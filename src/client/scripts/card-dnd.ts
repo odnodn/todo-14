@@ -86,6 +86,10 @@ function transformCard(card: HTMLElement, distance: number): void {
 }
 
 window.addEventListener('pointerdown', (e) => {
+  if (document.querySelector('.card.new')) {
+    return
+  }
+
   const originalCard = (e.target as HTMLElement).closest<HTMLElement>('.card')
 
   if (!originalCard) {
