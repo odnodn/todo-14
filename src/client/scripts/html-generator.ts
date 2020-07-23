@@ -17,6 +17,7 @@ export const generateColumn = ({
   const columnHtml = `
   <div class="column" data-column-id="${id}">
     <div class="column-header">
+      <div class="badge">0</div>
       <h2 class="column-name" spellcheck="false">${name}</h2>
       <div class="actions">
         <button class="action-btn new-card-btn">
@@ -46,6 +47,7 @@ export const generateCard = ({
 
   const cardHtml = `
   <div class="card" data-card-id="${id}">
+    <i class="icon card-icon">rectangle_on_rectangle_angled</i>
     <h1 class="card-title">${title}</h1>
     <p class="card-body">${body}</p>
     <button class="delete-card-btn">

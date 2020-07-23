@@ -7,11 +7,11 @@
     "dev:client": "webpack --watch",
     "dev:server": "ts-node-dev --respawn --transpile-only -r tsconfig-paths/register src/server/main.ts",
     "dev": "npm-run-all --parallel dev:client dev:server open",
-    "build:client": "webpack",
+    "build:client": "webpack --mode=production",
     "build:server": "rimraf dist/* && ttsc",
     "build": "npm run build:client && npm run build:server",
     "open": "wait-on tcp:12100 && open http://localhost:12100",
-    "start": "node dist/main.js",
+    "start": "node dist/src/server/main.js",
     "start:browser": "npm-run-all --parallel start open"
   },
   "repository": {
@@ -52,6 +52,7 @@
     "eslint-plugin-prettier": "^3.1.4",
     "html-webpack-plugin": "^4.3.0",
     "image-loader": "0.0.1",
+    "mini-css-extract-plugin": "^0.9.0",
     "npm-run-all": "^4.1.5",
     "postcss": "^7.0.32",
     "postcss-loader": "^3.0.0",

@@ -1,4 +1,5 @@
 import { modifyCardsOrderAPI } from '../api/modify-cards-order'
+import { updateColumnBadgeCount } from '../modules/update-column-badge-count'
 
 function isAnimatedCard(card: HTMLElement) {
   return card && card.classList.contains('animated')
@@ -85,6 +86,10 @@ function transformCard(card: HTMLElement, distance: number): void {
 }
 
 window.addEventListener('pointerdown', (e) => {
+  if (document.querySelector('.card.new')) {
+    return
+  }
+
   const originalCard = (e.target as HTMLElement).closest<HTMLElement>('.card')
 
   if (!originalCard) {
@@ -445,6 +450,7 @@ window.addEventListener('pointerdown', (e) => {
         placeholder.remove()
         ghostCard.remove()
 
+        // Update the DOM
         if (dropTargetCard) {
           dropTargetCard.parentElement.insertBefore(
             originalCard,
@@ -481,6 +487,10 @@ window.addEventListener('pointerdown', (e) => {
         document
           .querySelectorAll<HTMLElement>('.dummy-card')
           .forEach((dummy) => dummy.remove())
+
+        // Update cards number
+        updateColumnBadgeCount(originalColumn)
+        updateColumnBadgeCount(currentColumn)
 
         ghostCard.removeEventListener('transitionend', tec)
       })

@@ -3,6 +3,7 @@ import { escape } from '../modules/escape'
 import express from 'express'
 import { query } from '../modules/query'
 import { connection } from '../modules/connection'
+import { createActivity } from '../modules/create-an-activity'
 
 const router = express.Router()
 
@@ -22,7 +23,7 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
   const boardId = parseInt(params.boardId)
   const columnId = parseInt(params.columnId)
 
-  const name = body.name
+  const newName = body.name as string
   const previousColumnId =
     parseInt(body.previousColumnId) == body.previousColumnId
       ? parseInt(body.previousColumnId)
@@ -31,7 +32,9 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
   if (
     !boardId ||
     !columnId ||
-    (!name && previousColumnId !== null && typeof previousColumnId !== 'number')
+    (!newName &&
+      previousColumnId !== null &&
+      typeof previousColumnId !== 'number')
   ) {
     res.sendStatus(400)
     return
@@ -51,16 +54,20 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
     return
   }
 
+  let previousColumn: Column = null
+
   // Check if the previous column exists
   // only if the previous column id is given
   if (previousColumnId) {
-    const [previousColumn] = await query<Column[]>(`
-      SELECT * from \`column\`
+    previousColumn = (
+      await query<Column[]>(`
+      SELECT * FROM \`column\`
       WHERE
       id=${previousColumnId}
       AND
-      isDeleted=0
+      isDeleted = 0
     `)
+    )[0]
 
     if (!previousColumn) {
       res.sendStatus(400)
@@ -69,6 +76,20 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
   }
 
   const shouldUpdateOrder = previousColumnId !== undefined
+
+  let originalPreviousColumn: Column = null
+
+  if (shouldUpdateOrder && column.previousColumnId) {
+    originalPreviousColumn = (
+      await query<Column[]>(`
+      SELECT * FROM \`column\`
+      WHERE
+      id=${column.previousColumnId}
+      AND
+      isDeleted = 0
+    `)
+    )[0]
+  }
 
   connection.beginTransaction(async (err) => {
     if (err) throw err
@@ -105,10 +126,10 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
       await query(`
         UPDATE \`column\`
         SET
-        ${name ? `name = ${escape(name)}` : ''}
+        ${newName ? `name = ${escape(newName)}` : ''}
         ${
           shouldUpdateOrder
-            ? `${name ? ',' : ''} previousColumnId = ${escape(
+            ? `${newName ? ',' : ''} previousColumnId = ${escape(
                 previousColumnId
               )}`
             : ''
@@ -116,6 +137,27 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
         WHERE
         id = ${escape(column.id)}
       `)
+
+      if (newName) {
+        await createActivity({
+          type: 'modify',
+          boardId,
+          content: `컬럼의 이름이 [[${column.name}]]에서 [[${newName}]]로 수정되었습니다.`,
+        })
+      } else if (shouldUpdateOrder) {
+        if (previousColumnId !== column.previousColumnId) {
+          await createActivity({
+            type: 'move',
+            boardId,
+            content: `컬럼이 이동되었습니다.`,
+            // columnId,
+            // from: `${originalPreviousColumn?.id ?? null},${
+            //   originalPreviousColumn?.name ?? ''
+            // }`,
+            // to: `${previousColumn?.id ?? null},${previousColumn?.name ?? ''}`,
+          })
+        }
+      }
 
       connection.commit((err) => {
         if (err) {
@@ -127,8 +169,6 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
       throw err
     }
   })
-
-  // TODO: Create an activity after the modification
 
   res.sendStatus(200)
 })

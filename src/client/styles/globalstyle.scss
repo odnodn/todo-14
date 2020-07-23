@@ -2,14 +2,19 @@
 @use './icons' as *;
 @use './activity' as *;
 
-:root {
+@use './mixins' as *;
+
+:root,
+html.light-mode {
   // Colors
   --white: #ffffff;
+  --card-white: #fff;
   --alt-black: #444444;
   --light-blue: #eff1f3;
   --super-light-blue: #f5f5f7;
   --baemint: #10b3ad;
   --red: #f64646;
+  --orange: #f72269;
   --blue: #0091fa;
   --gray: #808082;
   --light-gray: #acacac;
@@ -23,12 +28,33 @@
   --baemin-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
   --todo-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
   --activity-item-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+
+  // Transition
+  --scheme-trans: background-color 800ms ease, box-shadow 800ms ease;
+}
+
+html.dark-mode {
+  --white: #333;
+  --card-white: #3f3f3f;
+  --alt-black: #f8f8f8;
+  --light-blue: #000;
+  --super-light-blue: #222;
+  --baemint: #1ae0da;
+  --red: #f55369;
+  --orange: #f76606;
+  --blue: #1db7ff;
+  --gray: #b7b7b7;
+
+  --todo-shadow: 0 1px 5px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(207, 207, 207, 0.302);
 }
 
 body {
   font-family: 'PAYW Pro', 'PAYW Pro KR', sans-serif;
   background-color: var(--light-blue);
   color: var(--alt-black);
+
+  transition: var(--scheme-trans), color 800ms ease;
 }
 
 * {

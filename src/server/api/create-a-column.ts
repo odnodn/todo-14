@@ -5,6 +5,7 @@ import { escape } from '../modules/escape'
 import express from 'express'
 import { query } from '../modules/query'
 import { mapSort } from './get-a-board-data'
+import { createActivity } from '../modules/create-an-activity'
 
 const router = express.Router()
 
@@ -72,7 +73,12 @@ router.post('/board/:boardId', async (req, res) => {
     return
   }
 
-  // TODO: Create an activity after the creation
+  // Create an activity after the creation
+  await createActivity({
+    type: 'add',
+    boardId,
+    content: '컬럼이 추가되었습니다.',
+  })
 
   res.json({ column })
 })

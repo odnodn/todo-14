@@ -1,3 +1,5 @@
+@use './mixins' as *;
+
 body {
   &.hovered {
     user-select: none;
@@ -32,20 +34,90 @@ body {
   align-items: center;
   justify-content: center;
 
+  .color-scheme {
+    position: absolute;
+    left: 32px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 10px;
+    transition: background-color 200ms ease, transform 200ms ease;
+    width: 40px;
+    height: 40px;
+
+    &:hover {
+      background-color: var(--white);
+    }
+
+    &:active {
+      transform: scale(0.95) translateY(-50%);
+    }
+
+    .icon {
+      font-size: 27px;
+      transition: transform 250ms ease, opacity 250ms ease, var(--scheme-trans);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50%);
+      transform-origin: center;
+
+      &.sun {
+        color: #fcb738;
+        transform: scale(0.3) translateX(-50%) translateY(-50%);
+        opacity: 0;
+      }
+
+      &.moon {
+        color: #7035df;
+      }
+
+      @include dark-mode {
+        &.sun {
+          transform: scale(1) translateX(-50%) translateY(-50%);
+          opacity: 1;
+        }
+
+        &.moon {
+          // display: none;
+          transform: scale(0.3) translateX(-50%) translateY(-50%);
+          opacity: 0;
+        }
+      }
+    }
+  }
+
   .board-name {
     font-size: 20px;
     font-weight: 600;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   }
 
   .activity-btn {
     position: absolute;
-    right: 35px;
+    right: 32px;
     top: 50%;
     transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    transition: background-color 200ms ease, transform 200ms ease,
+      var(--scheme-trans);
+
+    &:hover {
+      background-color: var(--white);
+    }
+
+    &:active {
+      transform: scale(0.95) translateY(-50%);
+    }
 
     .icon {
       font-size: 27px;
-      color: var(--alt-black);
+      color: var(--orange);
+      line-height: 1;
     }
   }
 }
@@ -72,14 +144,13 @@ $elm-padding: 19px;
     min-width: 353px;
     max-width: 353px;
     margin-left: 25px;
-    overflow-y: hidden;
 
     display: flex;
     flex-direction: column;
     overflow-y: auto;
     height: 100%;
 
-    transition: transform 200ms ease;
+    transition: transform 200ms ease, var(--scheme-trans);
 
     .column-header {
       z-index: 3;
@@ -88,21 +159,45 @@ $elm-padding: 19px;
       padding: $elm-padding;
       border-radius: var(--column-radius) var(--column-radius) 0 0;
 
+      transition: var(--scheme-trans);
+
       position: sticky;
       top: 0;
-      background-color: rgba(255, 255, 255, 0.7);
+      background-color: rgba(#fff, 0.7);
+      @include dark-mode {
+        background-color: rgba(#333, 0.7) !important;
+      }
       backdrop-filter: blur(10px);
 
+      .badge {
+        display: flex;
+        align-self: flex-start;
+        align-items: center;
+        justify-content: center;
+        line-height: 1.2;
+        background-color: var(--light-blue);
+        border-radius: 8px;
+        padding: 0 7px;
+        min-width: 27px;
+        min-height: 27px;
+        z-index: 300;
+        color: var(--gray);
+        margin-right: 7px;
+        font-size: 15px;
+        transition: var(--scheme-trans);
+      }
+
       .column-name {
+        flex: 1;
         font-size: 16px;
         font-weight: 500;
-        max-width: calc(100% - 75px);
         white-space: initial;
         cursor: default;
         text-shadow: 0 1px 3px rgba(#000, 0.2);
-        padding: 3px 4px;
+        padding: 3px 8px;
         transition: background-color ease 200ms;
         border-radius: 8px;
+        word-break: break-all;
 
         &[contenteditable] {
           cursor: text;
@@ -120,6 +215,7 @@ $elm-padding: 19px;
         transition: opacity 200ms ease, transform 200ms ease;
         display: flex;
         align-self: flex-start;
+        margin-left: 15px;
 
         .action-btn.delete-column-btn {
           margin-left: 15px;
@@ -158,23 +254,23 @@ $elm-padding: 19px;
       .card {
         overflow: hidden;
         position: relative;
-        background-color: var(--white);
+        background-color: var(--card-white);
         padding: $elm-padding;
         box-shadow: var(--todo-shadow);
         border-radius: var(--card-radius);
         white-space: initial;
-        transition: transform 0.2s ease;
+        word-break: break-all;
 
         margin-bottom: 15px;
 
-        transition: transform 200ms ease;
+        transition: transform 200ms ease, var(--scheme-trans);
 
         &.hide {
           display: none;
         }
 
         &:hover {
-          transform: scale(1.02);
+          transform: scale(1.015);
         }
 
         &:active {
@@ -182,9 +278,19 @@ $elm-padding: 19px;
           box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
         }
 
+        .card-icon {
+          font-size: 18px;
+          color: var(--blue);
+          position: absolute;
+          top: 16px;
+          left: 13px;
+        }
+
         .card-title {
           font-size: 16px;
           font-weight: 500;
+          margin-left: 25px;
+          margin-right: 17px;
         }
 
         .card-body {
@@ -229,6 +335,9 @@ $elm-padding: 19px;
         padding: 0;
 
         .content {
+          background-color: var(--card-white);
+          color: var(--alt-black);
+
           resize: none;
 
           padding: $elm-padding;
