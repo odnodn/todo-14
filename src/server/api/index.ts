@@ -14,6 +14,8 @@ import { RemoveACardRouter } from './remove-a-card'
 
 import { getActivitiesListRouter } from './get-activities-list'
 
+import { resetDatabaseRouter } from './reset-database'
+
 const router = express.Router()
 
 router.use(getABoardDataRouter)
@@ -29,5 +31,7 @@ router.use(modifyACardsOrderRouter)
 router.use(RemoveACardRouter)
 
 router.use(getActivitiesListRouter)
+
+router.use(resetDatabaseRouter)
 
 export { router as api }
