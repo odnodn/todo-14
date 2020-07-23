@@ -6,8 +6,8 @@ export const parseContent = (content: string): [string, string] => {
   }
 
   return [
-    content.slice(0, firstNewLineIdx),
-    content.slice(firstNewLineIdx + 1, content.length),
+    content.slice(0, firstNewLineIdx).trim(),
+    content.slice(firstNewLineIdx + 1, content.length).trim(),
   ]
 }
 
