@@ -1,0 +1,138 @@
+:root {
+  --baemint: #10b2ad;
+  --easing: cubic-bezier(0.42, 0.16, 0.15, 1);
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+* {
+  margin: 0;
+}
+
+.app {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.outer {
+  background-color: var(--baemint);
+  min-width: 1297px;
+  max-width: 1297px;
+  height: 465px;
+  border-radius: 50px;
+  /* box-shadow: inset 0 0 60px #0e9893; */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+@keyframes rise {
+  0% {
+    box-shadow: none;
+  }
+  50% {
+    box-shadow: -20px -20px 60px #12cec7, 20px 20px 60px #0b918c;
+  }
+  100% {
+    transform: translateX(-750px);
+    box-shadow: -20px -20px 60px #12cec7, 20px 20px 60px #0b918c;
+  }
+}
+
+.block {
+  width: 300px;
+  height: 300px;
+  background-color: var(--baemint);
+  border-radius: 30px;
+  margin-left: 100px;
+  animation: 2.5s rise var(--easing) forwards;
+  z-index: 100;
+}
+
+.block:first-child {
+  margin-left: 0;
+}
+
+.block:nth-child(1) {
+  animation-delay: 0s;
+}
+.block:nth-child(2) {
+  animation-delay: 0.08s;
+}
+.block:nth-child(3) {
+  animation-delay: 0.16s;
+}
+.block:nth-child(4) {
+  animation-delay: 0.24s;
+}
+.block:nth-child(5) {
+  animation-delay: 0.32s;
+}
+.block:nth-child(6) {
+  animation-delay: 0.4s;
+}
+
+.text-box {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 80px;
+  color: #fff;
+  text-align: right;
+}
+
+@keyframes text {
+  0% {
+    transform: translateY(120%);
+  }
+  100% {
+    transform: translateY(0%);
+  }
+}
+
+.text {
+  overflow: hidden;
+}
+
+.text span {
+  display: inline-block;
+  transform: translateY(100%);
+  font-weight: 600;
+  animation: 0.8s text var(--easing) 1.8s forwards;
+}
+
+.title {
+  font-size: 75px;
+  margin-bottom: 20px;
+}
+
+.body {
+  font-size: 29px;
+  margin-top: 3px;
+  opacity: 0.8;
+}
+
+.body span {
+  font-weight: 500;
+  animation-delay: 2s;
+}
+
+.body.second span {
+  animation-delay: 2.2s;
+}
+
+.link span {
+  margin-top: 15px;
+  animation-delay: 2.4s;
+  text-decoration: underline;
+}
