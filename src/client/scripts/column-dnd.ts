@@ -223,6 +223,8 @@ window.addEventListener('pointerdown', (e) => {
                 )
               ) || null,
           },
+        }).catch(() => {
+          window.location.reload()
         })
 
         const result = Array.from(originalColumn.parentNode.children)
