@@ -344,7 +344,6 @@ window.addEventListener('pointerdown', (e) => {
             isPureCard(travelNode) &&
             !travelNode.isSameNode(originalCard)
           ) {
-            // console.log(travelNode)
             transformCard(travelNode, distance * (hasIndexAndIsBigger ? -1 : 1))
 
             travelNode = (hasIndexAndIsBigger
