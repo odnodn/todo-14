@@ -1,5 +1,6 @@
 import { removeACardAPI } from '@/client/api/remove-a-card'
 import { CardData } from '../card'
+import { updateColumnBadgeCount } from '@/client/modules/update-column-badge-count'
 
 // '삭제'
 const deleteCardHandler = async ({
@@ -11,7 +12,12 @@ const deleteCardHandler = async ({
   const success = await removeACardAPI({
     urlParam: { boardId, columnId, cardId },
   })
+
+  const columnElm = cardElm.closest<HTMLElement>('.column')
+
   success && cardElm.remove()
+
+  updateColumnBadgeCount(columnElm)
 }
 
 export { deleteCardHandler }

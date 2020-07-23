@@ -8,6 +8,7 @@ import { createACardAPI } from '@/client/api/create-a-card'
 import { eventCollector } from '@/client/utils/event-collector'
 
 import { CardData } from '../card'
+import { updateColumnBadgeCount } from '@/client/modules/update-column-badge-count'
 
 //  textarea 입력에 따라 카드추가 버튼 활성/비활성화
 const textAreaKeyupHandler = (e) => {
@@ -51,6 +52,8 @@ const createCardHandler = async ({
 
   cardFormElm.parentElement.prepend(newCardElm)
   cardFormElm.remove()
+
+  updateColumnBadgeCount(newCardElm.closest('.column'))
 
   eventCollector.remove(textAreaElm, 'keyup')
 }
