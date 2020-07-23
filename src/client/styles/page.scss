@@ -27,7 +27,7 @@ body {
 .navigation {
   position: relative;
 
-  height: 79px;
+  height: 100px;
   width: 100%;
 
   display: flex;
@@ -398,6 +398,7 @@ $elm-padding: 19px;
     align-items: center;
     justify-content: center;
     color: var(--gray);
+    user-select: none;
 
     .icon {
       font-size: 41px;
