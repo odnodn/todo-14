@@ -5,7 +5,9 @@ import { connection } from '@/server/modules/connection'
 import { escape } from '../modules/escape'
 
 import { MysqlInsertOrUpdateResult } from '@/types/query'
-import { Card } from '@/types/schema'
+import { Card, Column } from '@/types/schema'
+import { createActivity } from '../modules/create-an-activity'
+import { getCardTitle } from '@/client/utils/content-parser'
 
 const router = express.Router()
 
@@ -18,7 +20,11 @@ export type RemoveCardRequestParams = {
 router.delete(
   '/board/:boardId/column/:columnId/card/:cardId',
   async (req, res) => {
-    const { cardId } = (req.params as unknown) as RemoveCardRequestParams
+    const {
+      boardId,
+      columnId,
+      cardId,
+    } = (req.params as unknown) as RemoveCardRequestParams
 
     const [card] = await query<Card[]>(
       `SELECT * FROM card WHERE id=${escape(cardId)}`
@@ -44,6 +50,13 @@ router.delete(
             card.previousCardId
           )} WHERE previousCardId=${escape(cardId)}`
         )
+
+        const cardTitle = getCardTitle(card.content)
+        createActivity({
+          type: 'delete',
+          boardId,
+          content: `<<${cardTitle}>>가 삭제되었습니다`,
+        })
 
         connection.commit((err) => {
           if (err) {

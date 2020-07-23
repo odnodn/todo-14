@@ -1,7 +1,11 @@
 import express from 'express'
 
 import { query } from '@/server/modules/query'
+import { escape } from '@/server/modules/escape'
 import { MysqlInsertOrUpdateResult } from '@/types/query'
+import { getCardTitle, parseContent } from '@/client/utils/content-parser'
+import { createActivity } from '../modules/create-an-activity'
+import { Card } from '@/types/response'
 
 const router = express.Router()
 
@@ -21,7 +25,10 @@ export type ModifyCardRequestBody = {
 router.put(
   '/board/:boardId/column/:columnId/card/:cardId',
   async (req, res) => {
-    const { cardId } = (req.params as unknown) as ModifyCardRequestParams
+    const {
+      boardId,
+      cardId,
+    } = (req.params as unknown) as ModifyCardRequestParams
     const {
       content,
       icon,
@@ -35,9 +42,35 @@ router.put(
       return
     }
 
+    const [card] = await query<Card[]>(
+      `SELECT * FROM card WHERE id=${escape(cardId)}`
+    )
+
     const { affectedRows } = await query<MysqlInsertOrUpdateResult>(`UPDATE card
     SET content="${content}", icon="${icon}", columnId=${columnId}, previousCardId=${previousCardId}
     WHERE id=${cardId}`)
+
+    const [prevCardTitle, prevBody] = parseContent(card.content)
+    const [cardTitle, body] = parseContent(content)
+
+    const activityContents = []
+    if (prevCardTitle !== cardTitle) {
+      activityContents.push(
+        `카드 제목이 <<${prevCardTitle}>>에서 <<${cardTitle}>>로`
+      )
+    }
+
+    if (prevBody !== body) {
+      activityContents.push(
+        `카드 내용이 <<${prevCardTitle}>>에서 <<${cardTitle}>>로`
+      )
+    }
+
+    createActivity({
+      type: 'modify',
+      boardId,
+      content: `${activityContents.join(', ')} 수정되었습니다.`,
+    })
 
     if (!affectedRows) {
       res.sendStatus(404)

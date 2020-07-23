@@ -10,3 +10,9 @@ export const parseContent = (content: string): [string, string] => {
     content.slice(firstNewLineIdx + 1, content.length),
   ]
 }
+
+export const getCardTitle = (content) => {
+  const [title] = parseContent(content)
+
+  return title
+}
