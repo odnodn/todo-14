@@ -1,5 +1,5 @@
 import { getActivitiesListAPI } from '../api/get-activities-list'
-import { parseBrackets } from '../utils/content-parser'
+import { parseBrackets, parseLink } from '../utils/content-parser'
 import { generateActivity, generateElement } from './html-generator'
 import { Activity, ActivityType } from '@/types/response'
 
@@ -10,6 +10,37 @@ window.addEventListener('DOMContentLoaded', () => {
   const activitySidebar = document.querySelector<HTMLElement>(
     '.activity-sidebar'
   )
+
+  let isFetching = false
+  activitySidebar.addEventListener('scroll', async function temp(e) {
+    // const target = e.target as HTMLElement
+    const { scrollHeight, clientHeight, scrollTop } = activitySidebar
+
+    const FIRE_HEIGHT = 50
+
+    if (!isFetching && scrollHeight - clientHeight < scrollTop + FIRE_HEIGHT) {
+      isFetching = true
+      const lastId =
+        parseInt(
+          activitySidebar
+            .querySelector('.activity-container')
+            .lastElementChild?.getAttribute('data-act-id')
+        ) || 0
+
+      const activities = await getActivitiesListAPI({
+        urlParam: { boardId: 1, lastSendedActivityId: lastId },
+      })
+
+      if (!activities.length) {
+        activitySidebar.removeEventListener('scroll', temp)
+        return
+      }
+
+      appendActivities(activities)
+
+      isFetching = false
+    }
+  })
 
   const getActivityIconsName = (type: ActivityType): string => {
     switch (type) {
@@ -24,6 +55,22 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  const appendActivities = (activities: Activity[]) => {
+    const fragmentElm = document.createDocumentFragment()
+
+    activities.forEach((act) => {
+      const iconName = getActivityIconsName(act.type)
+      let content = parseBrackets(act.content)
+      content = parseLink(content)
+      const actElm = generateActivity({ id: act.id, iconName, content })
+
+      fragmentElm.appendChild(actElm)
+    })
+
+    const activitiesContainerElm = document.querySelector('.activity-container')
+    activitiesContainerElm.appendChild(fragmentElm)
+  }
+
   const renderActivities = (activities: Activity[]) => {
     activitySidebar.innerHTML = ''
 
@@ -33,8 +80,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
     activities.forEach((act) => {
       const iconName = getActivityIconsName(act.type)
-      const content = parseBrackets(act.content)
-      const actElm = generateActivity({ iconName, content })
+      let content = parseBrackets(act.content)
+      content = parseLink(content)
+      const actElm = generateActivity({ id: act.id, iconName, content })
 
       activitiesContainerElm.appendChild(actElm)
     })
@@ -48,7 +96,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   activityBtn.addEventListener('click', async () => {
     const activities = await getActivitiesListAPI({
-      urlParam: { boardId: 1 },
+      urlParam: { boardId: 1, lastSendedActivityId: 0 },
     })
 
     renderActivities(activities)
