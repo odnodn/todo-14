@@ -23,7 +23,7 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
   const boardId = parseInt(params.boardId)
   const columnId = parseInt(params.columnId)
 
-  const newName = body.name?.parse() as string
+  const newName = body.name?.trim() as string
   const previousColumnId =
     parseInt(body.previousColumnId) == body.previousColumnId
       ? parseInt(body.previousColumnId)
