@@ -57,6 +57,7 @@ async function run() {
     await wait(600)
     showVideo()
     await wait(1000)
+    video.playbackRate = 2
     video.play()
     video.onended = () => {
       modifyCard()
@@ -75,6 +76,7 @@ async function modifyCard() {
   await wait(500)
   showVideo()
   await wait(1000)
+  video.playbackRate = 1.5
   video.play()
   video.onended = () => {
     dndCard()
@@ -96,6 +98,7 @@ async function dndCard() {
   await wait(1000)
   showVideo()
   await wait(1000)
+  video.playbackRate = 1.4
   video.play()
   video.onended = () => {
     modifyColumn()
@@ -135,6 +138,7 @@ async function modifyColumn() {
   await wait(300)
   showVideo()
   await wait(1500)
+  video.playbackRate = 1.4
   video.play()
   video.onended = () => {
     dndColumn()
@@ -162,6 +166,7 @@ async function dndColumn() {
   await wait(300)
   showVideo()
   await wait(1500)
+  video.playbackRate = 1.2
   video.play()
   video.onended = () => {
     mobile()
@@ -186,6 +191,7 @@ async function mobile() {
   video.onended = () => {
     videoSource.setAttribute('src', './videos/mobile-scroll.mov')
     video.load()
+    video.playbackRate = 1
     video.play()
     video.onended = () => {
       darkMode()
