@@ -23,7 +23,7 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
   const boardId = parseInt(params.boardId)
   const columnId = parseInt(params.columnId)
 
-  const newName = body.name as string
+  const newName = body.name?.parse() as string
   const previousColumnId =
     parseInt(body.previousColumnId) == body.previousColumnId
       ? parseInt(body.previousColumnId)
@@ -138,7 +138,7 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
         id = ${escape(column.id)}
       `)
 
-      if (newName) {
+      if (newName !== column.name) {
         await createActivity({
           type: 'modify',
           boardId,
