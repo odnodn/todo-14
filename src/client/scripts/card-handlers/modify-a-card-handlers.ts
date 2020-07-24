@@ -1,6 +1,6 @@
 import { generateEditCardForm } from '@/client/scripts/html-generator'
 
-import { parseContent } from '@/client/utils/content-parser'
+import { parseContent, parseLink } from '@/client/utils/content-parser'
 import { eventCollector } from '@/client/utils/event-collector'
 
 import { modifyACardAPI } from '@/client/api/modify-a-card'
@@ -62,9 +62,10 @@ const editCardHandler = async (
 
   if (!success) return
 
-  const [title, body] = parseContent(content)
-  cardElm.querySelector('.card-title').textContent = title
-  cardElm.querySelector('.card-body').textContent = body
+  const str = parseLink(content)
+  const [title, body] = parseContent(str)
+  cardElm.querySelector('.card-title').innerHTML = title
+  cardElm.querySelector('.card-body').innerHTML = body
 
   cardFormElm.remove()
   cardElm.classList.remove('hide')

@@ -26,3 +26,14 @@ export const parseBrackets = (content: string) => {
 
   return str
 }
+
+export const parseLink = (content: string) => {
+  const linkRegex = /(\[)(.*?)(\])(\()(.*?)(\))/gm
+
+  const str = content.replace(
+    linkRegex,
+    '<a class="link" href="$5" target="_blank">$2</a>'
+  )
+
+  return str
+}

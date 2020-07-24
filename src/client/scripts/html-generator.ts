@@ -1,4 +1,4 @@
-import { parseContent } from '@/client/utils/content-parser'
+import { parseContent, parseLink } from '@/client/utils/content-parser'
 
 export const generateElement = (html: string): HTMLElement => {
   const parser = new DOMParser()
@@ -43,7 +43,8 @@ export const generateCard = ({
   id: number
   content: string
 }): HTMLElement => {
-  const [title, body] = parseContent(content)
+  const str = parseLink(content)
+  const [title, body] = parseContent(str)
 
   const cardHtml = `
   <div class="card" data-card-id="${id}">
@@ -88,13 +89,16 @@ export const generateEditCardForm = ({
   content: string
   id: number
 }): HTMLElement => {
+  const linkRegex = /(<a)(.*?)(href=")(.*?)"(.*?)>(.*?)(<\/a>)/gm
+  const str = content.replace(linkRegex, `[$6]($4)`)
+
   const newCardForm = `
   <div class="card new" data-card-id="${id}">
     <textarea
       class="content"
       spellcheck="false"
       autocomplete="off"
-    >${content}</textarea>
+    >${str}</textarea>
     <div class="buttons">
       <button class="card-btn edit" disabled="true">Done</button>
       <button class="card-btn cancel">Cancel</button>
@@ -106,9 +110,11 @@ export const generateEditCardForm = ({
 }
 
 export const generateActivity = ({
+  id,
   iconName,
   content,
 }: {
+  id: number
   iconName: string
   content: string
 }): HTMLElement => {
@@ -124,7 +130,7 @@ export const generateActivity = ({
       : ''
 
   const activity = `
-    <div class="activity">
+    <div class="activity" data-act-id="${id}">
       <div class="icon-wrapper ${cardIconClassName}">
         <i class="icon">${iconName}</i>
       </div>
