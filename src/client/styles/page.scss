@@ -22,13 +22,25 @@ body {
 
   display: flex;
   flex-direction: column;
+
+  @media only screen and (min-width: 1400px) {
+    padding: 0 30px;
+  }
+}
+
+:root {
+  --nav-height: 100px;
+
+  @media only screen and (min-width: 1400px) {
+    --nav-height: 140px;
+  }
 }
 
 .navigation {
   position: relative;
   pointer-events: none;
 
-  height: 100px;
+  height: var(--nav-height);
   width: 100%;
 
   display: flex;
@@ -134,8 +146,15 @@ $elm-padding: 19px;
   right: 0;
   bottom: 0;
   left: 0;
-  padding-top: 104px;
+  --top-gap: calc(var(--nav-height) + 4px);
+  padding-top: var(--top-gap);
+
   padding-bottom: 25px;
+
+  @media only screen and (min-width: 1400px) {
+    padding-bottom: 50px;
+  }
+
   flex: 1;
   overflow-x: auto;
   scroll-behavior: smooth;
@@ -247,7 +266,7 @@ $elm-padding: 19px;
     }
 
     .cards-container {
-      padding: 4px $elm-padding 100px;
+      padding: 4px $elm-padding 30px;
 
       &:empty {
         height: 100%;
@@ -311,7 +330,9 @@ $elm-padding: 19px;
           font-size: 16px;
           font-weight: 500;
           margin-left: 25px;
-          margin-right: 17px;
+          margin-right: 20px;
+          white-space: break-spaces;
+          word-break: break-word;
         }
 
         .card-body {
