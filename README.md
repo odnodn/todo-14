@@ -24,6 +24,8 @@ All the UI and UX were entirely designed by the maintainers of this project. All
 
 In this project, we design and implement a dark mode. Dark mode is a trending alternative design along with the opposing light mode. We did this to leverage the power of **CSS** and **Sass**. They help us easily develop the color schemes(themes).
 
+![color-scheme](https://user-images.githubusercontent.com/19797697/88361089-dc2c8780-cdb2-11ea-848c-71199be978a8.png)
+
 > In this project we use CSS `var()` to modularize UI components and dynamically update the values at appropriate situation
 
 ### Animation
@@ -37,6 +39,10 @@ It is best to have a great designer colleague if you don't have any sense of des
 ## Database
 
 ### Transaction
+
+[Transaction](https://www.tutorialspoint.com/mysql/mysql-transactions) ensures that all operations are completed successfully. In this project, cards and columns are implemented similar to linked-lists. When they are drag and droped somewhere, we must to modify their previous pointer(~~something like `previousId`~~). Since we don't implement the real-time sync, it could be easily borken by multiple users at the same time. So, we use transaction to ensures that all linked operations are fully completed.
+
+![linked-list](https://user-images.githubusercontent.com/19797697/88360969-793af080-cdb2-11ea-9fe9-33ffc8c58316.png)
 
 ## Other documentation
 
