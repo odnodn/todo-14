@@ -5,7 +5,7 @@ export const resetSql = `
 -- https://tableplus.com/
 --
 -- Database: todo
--- Generation Time: 2020-07-24 13:01:10.2620
+-- Generation Time: 2020-07-24 13:18:16.2090
 -- -------------------------------------------------------------
 
 
@@ -27,7 +27,7 @@ CREATE TABLE \`activity\` (
   \`boardId\` int NOT NULL,
   \`createdAt\` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (\`id\`)
-) ENGINE=InnoDB AUTO_INCREMENT=584 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=588 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS \`card\`;
 CREATE TABLE \`card\` (
@@ -43,7 +43,7 @@ CREATE TABLE \`card\` (
   PRIMARY KEY (\`id\`),
   KEY \`fkIdx_49\` (\`columnId\`),
   CONSTRAINT \`FK_49\` FOREIGN KEY (\`columnId\`) REFERENCES \`column\` (\`id\`)
-) ENGINE=InnoDB AUTO_INCREMENT=310 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=311 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS \`column\`;
 CREATE TABLE \`column\` (
@@ -56,7 +56,7 @@ CREATE TABLE \`column\` (
   PRIMARY KEY (\`id\`),
   KEY \`fkIdx_46\` (\`boardId\`),
   CONSTRAINT \`FK_46\` FOREIGN KEY (\`boardId\`) REFERENCES \`board\` (\`id\`)
-) ENGINE=InnoDB AUTO_INCREMENT=563 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=564 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO \`activity\` (\`id\`, \`type\`, \`content\`, \`boardId\`, \`createdAt\`) VALUES
 ('487', 'add', '<<Dark Mode 🌙>>가 [[🔥 To Do]]에 추가되었습니다.', '1', '2020-06-24 03:44:24'),
@@ -114,7 +114,11 @@ INSERT INTO \`activity\` (\`id\`, \`type\`, \`content\`, \`boardId\`, \`createdA
 ('548', 'modify', '카드 내용이 <<- Stack\n- API\n- Database\n- Drag and drop\n- RFC>>에서 <<- Stack\n- API\n- Database\n- Drag and drop\n- RFC 💬>>로 수정되었습니다.', '1', '2020-07-24 00:44:24'),
 ('549', 'modify', '카드 제목이 <<Design (Figma)>>에서 <<Design (Figma 💅)>>로 수정되었습니다.', '1', '2020-07-24 01:04:24'),
 ('580', 'modify', '카드 내용이 <<- Color palette (hand-picked 🤏)\n- Icons (Framework 7 icons)\n\n# Production version may look different to the prototypal design>>에서 <<- Color palette (hand-picked 🤏)\n- Icons (Framework 7 icons)\n\n# Production version may look different to the prototypal design\n\n[🔗](https://www.figma.com/file/MXVVUZmgoY4NPO2BO0nfLq/%EC%9A%B0%EC%95%84%ED%95%9C-%ED%85%8C%ED%81%AC%EC%BA%A0%ED%94%84?node-id=60%3A0)>>로 수정되었습니다.', '1', '2020-07-24 03:53:36'),
-('581', 'modify', '카드 내용이 <<- Color palette (hand-picked 🤏)\n- Icons (Framework 7 icons)\n\n# Production version may look different to the prototypal design\n\n[🔗](https://www.figma.com/file/MXVVUZmgoY4NPO2BO0nfLq/%EC%9A%B0%EC%95%84%ED%95%9C-%ED%85%8C%ED%81%AC%EC%BA%A0%ED%94%84?node-id=60%3A0)>>에서 <<- Color palette (hand-picked 🤏)\n- Icons (Framework 7 icons)\n\n# Production version may look different to the prototypal design\n\n🔗[Link](https://www.figma.com/file/MXVVUZmgoY4NPO2BO0nfLq/%EC%9A%B0%EC%95%84%ED%95%9C-%ED%85%8C%ED%81%AC%EC%BA%A0%ED%94%84?node-id=60%3A0)>>로 수정되었습니다.', '1', '2020-07-24 03:54:03');
+('581', 'modify', '카드 내용이 <<- Color palette (hand-picked 🤏)\n- Icons (Framework 7 icons)\n\n# Production version may look different to the prototypal design\n\n[🔗](https://www.figma.com/file/MXVVUZmgoY4NPO2BO0nfLq/%EC%9A%B0%EC%95%84%ED%95%9C-%ED%85%8C%ED%81%AC%EC%BA%A0%ED%94%84?node-id=60%3A0)>>에서 <<- Color palette (hand-picked 🤏)\n- Icons (Framework 7 icons)\n\n# Production version may look different to the prototypal design\n\n🔗[Link](https://www.figma.com/file/MXVVUZmgoY4NPO2BO0nfLq/%EC%9A%B0%EC%95%84%ED%95%9C-%ED%85%8C%ED%81%AC%EC%BA%A0%ED%94%84?node-id=60%3A0)>>로 수정되었습니다.', '1', '2020-07-24 03:54:03'),
+('584', 'add', '컬럼이 추가되었습니다.', '1', '2020-07-24 04:15:52'),
+('585', 'modify', '컬럼의 이름이 [[untitled column]]에서 [[링크 테스트]]로 수정되었습니다.', '1', '2020-07-24 04:15:57'),
+('586', 'add', '<<[google](www.google.com)>>가 [[링크 테스트]]에 추가되었습니다.', '1', '2020-07-24 04:16:10'),
+('587', 'modify', '카드 내용이 <<- Stack\n- API\n- Database\n- Drag and drop\n- RFC 💬>>에서 <<- Stack\n- [API](https://github.com/woowa-techcamp-2020/todo-14/issues/13)\n- Database\n- [Drag and drop](https://github.com/woowa-techcamp-2020/todo-14/blob/main/doc/Drag-and-Drop-with-Animation.md)\n- RFC 💬>>로 수정되었습니다.', '1', '2020-07-24 04:17:48');
 
 INSERT INTO \`card\` (\`id\`, \`columnId\`, \`userId\`, \`content\`, \`icon\`, \`previousCardId\`, \`createdAt\`, \`editedAt\`, \`isDeleted\`) VALUES
 ('273', '551', '1', '[ API ] Card\nCreate, Read, Update, Delete', NULL, '297', '2020-07-23 09:23:20', NULL, '0'),
@@ -128,18 +132,20 @@ INSERT INTO \`card\` (\`id\`, \`columnId\`, \`userId\`, \`content\`, \`icon\`, \
 ('302', '550', '1', 'Allow vertical scroll inside column when drag and drop a card', NULL, '304', '2020-07-24 01:36:33', NULL, '0'),
 ('303', '551', '1', 'Edit column name 🏷\n- Double click to edit\n- Use \`contenteditable\`', NULL, NULL, '2020-07-24 01:40:01', NULL, '0'),
 ('304', '550', '1', 'Column drag and drop with scrolling\nscroll snap(?)', NULL, NULL, '2020-07-24 01:42:49', NULL, '0'),
-('305', '541', '1', 'Documentation 📚\n- Stack\n- API\n- Database\n- Drag and drop\n- RFC 💬', NULL, '299', '2020-07-24 01:44:21', NULL, '0'),
+('305', '541', '1', 'Documentation 📚\n- Stack\n- [API](https://github.com/woowa-techcamp-2020/todo-14/issues/13)\n- Database\n- [Drag and drop](https://github.com/woowa-techcamp-2020/todo-14/blob/main/doc/Drag-and-Drop-with-Animation.md)\n- RFC 💬', NULL, '299', '2020-07-24 01:44:21', NULL, '0'),
 ('306', '561', '1', '[범수](https://github.com/choibumsu)', NULL, '307', '2020-07-24 03:27:46', NULL, '1'),
 ('307', '561', '1', '[google](www.google.com)\n[google](www.google.com)', NULL, '308', '2020-07-24 03:34:33', NULL, '1'),
 ('308', '561', '1', '[google](www.google.com) .', NULL, '309', '2020-07-24 03:49:59', NULL, '1'),
-('309', '561', '1', '[google](www.google.com)', NULL, NULL, '2020-07-24 03:52:00', NULL, '1');
+('309', '561', '1', '[google](www.google.com)', NULL, NULL, '2020-07-24 03:52:00', NULL, '1'),
+('310', '563', '1', '[google](www.google.com)', NULL, NULL, '2020-07-24 04:16:10', NULL, '0');
 
 INSERT INTO \`column\` (\`id\`, \`boardId\`, \`name\`, \`previousColumnId\`, \`createdAt\`, \`isDeleted\`) VALUES
 ('541', '1', '🏃‍♂️ In Progress', '550', '2020-07-23 08:35:12', '0'),
 ('550', '1', '🔥 To Do', NULL, '2020-07-23 10:15:40', '0'),
 ('551', '1', '✅ Done', '541', '2020-07-23 11:12:08', '0'),
 ('561', '1', 'link test', NULL, '2020-07-24 03:27:17', '1'),
-('562', '1', 'untitled column', NULL, '2020-07-24 03:49:18', '1');
+('562', '1', 'untitled column', NULL, '2020-07-24 03:49:18', '1'),
+('563', '1', '링크 테스트', '551', '2020-07-24 04:15:52', '0');
 
 
 
