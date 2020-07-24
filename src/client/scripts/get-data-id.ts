@@ -17,8 +17,8 @@ const getPreviousCardNumber = (cardElm: HTMLElement): number => {
 }
 
 const getCardData = (cardElm: HTMLElement) => {
-  const title = cardElm.querySelector('.card-title').textContent
-  const body = cardElm.querySelector('.card-body').textContent
+  const title = cardElm.querySelector('.card-title').innerHTML
+  const body = cardElm.querySelector('.card-body').innerHTML
   const content = [title, body].join('\n').trim()
 
   return {

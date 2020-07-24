@@ -142,6 +142,10 @@
         .content-card {
           color: var(--blue);
           margin-right: 4px;
+
+          .link {
+            color: var(--baemint);
+          }
         }
 
         .content-column {

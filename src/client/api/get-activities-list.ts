@@ -8,12 +8,15 @@ export const getActivitiesListAPI = async ({
 }: {
   urlParam: GetActivitiesListRequestParams
 }): Promise<GetActivitiesListResponseData['activities']> => {
-  const res = await fetch(`/board/${urlParam.boardId}/activity`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
+  const res = await fetch(
+    `/board/${urlParam.boardId}/activity/${urlParam.lastSendedActivityId}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  )
 
   if (!res.ok) return null
 
