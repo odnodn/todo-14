@@ -174,7 +174,7 @@ $elm-padding: 19px;
       top: 0;
       background-color: rgba(#fff, 0.7);
       @include dark-mode {
-        background-color: rgba(#333, 0.7) !important;
+        background-color: rgba(#222, 0.7) !important;
       }
       backdrop-filter: blur(10px);
 
