@@ -1,4 +1,5 @@
 import { parseContent } from '@/client/utils/content-parser'
+import { friendlyTime } from '../modules/friendly-time'
 
 export const generateElement = (html: string): HTMLElement => {
   const parser = new DOMParser()
@@ -108,9 +109,11 @@ export const generateEditCardForm = ({
 export const generateActivity = ({
   iconName,
   content,
+  time,
 }: {
   iconName: string
   content: string
+  time: string
 }): HTMLElement => {
   const cardIconClassName =
     iconName === 'plus_circle_fill'
@@ -128,7 +131,12 @@ export const generateActivity = ({
       <div class="icon-wrapper ${cardIconClassName}">
         <i class="icon">${iconName}</i>
       </div>
-      <div class="content">${content}</div>
+      <div class="content">
+        <div class="body">${content}</div>
+        <span class="time"><i class="icon">clock</i>${friendlyTime(
+          new Date(time)
+        )}</span>
+      </div>
     </div>
     `
 

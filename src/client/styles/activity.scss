@@ -148,6 +148,25 @@
           color: var(--red);
           margin-right: 4px;
         }
+
+        .body {
+          word-break: break-word;
+        }
+
+        .time {
+          display: block;
+          margin-top: 10px;
+          font-size: 15px;
+          color: var(--gray);
+          font-weight: 400;
+
+          .icon {
+            display: inline-block;
+            margin-right: 5px;
+            width: unset;
+            height: unset;
+          }
+        }
       }
     }
   }

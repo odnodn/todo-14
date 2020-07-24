@@ -34,7 +34,11 @@ window.addEventListener('DOMContentLoaded', () => {
     activities.forEach((act) => {
       const iconName = getActivityIconsName(act.type)
       const content = parseBrackets(act.content)
-      const actElm = generateActivity({ iconName, content })
+      const actElm = generateActivity({
+        iconName,
+        content,
+        time: act.createdAt,
+      })
 
       activitiesContainerElm.appendChild(actElm)
     })

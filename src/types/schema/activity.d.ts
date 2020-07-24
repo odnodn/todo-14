@@ -4,4 +4,5 @@ export type Activity = {
   id?: number
   type?: ActivityType
   content?: string
+  createdAt?: string
 }
