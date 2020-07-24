@@ -318,6 +318,10 @@ $elm-padding: 19px;
           font-weight: 400;
           margin-top: 15px;
           white-space: break-spaces;
+
+          &:empty {
+            margin-top: 0;
+          }
         }
 
         .delete-card-btn {
