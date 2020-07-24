@@ -10,7 +10,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   color: #fff;
-  cursor: none;
+  /* cursor: none; */
   transition: opacity 300ms ease, background-color 800ms ease;
 }
 
@@ -160,7 +160,7 @@ body {
   font-weight: 500;
   color: rgba(255, 255, 255, 0.8);
   font-size: 2.5vw;
-  line-height: 1.2;
+  line-height: 1.3;
   margin-top: 1vw;
 }
 
@@ -168,12 +168,21 @@ body {
   margin-top: 0vw;
 }
 
-.moon {
+.moon-wrapper {
+  display: flex;
+  transform: translateY(50vh) translateX(-50%) scale(0);
+  transition: transform 1200ms var(--easing);
   position: fixed;
   top: 50%;
   left: 25vw;
-  transform: translateY(50vh) translateX(-50%);
-  width: 20vw;
-  height: 20vw;
-  transition: transform 800ms var(--easing);
+  width: 25vw;
+  height: 25vw;
+  object-fit: cover;
+}
+
+.moon {
+  width: 100%;
+  height: 100%;
+  transform: rotate(60deg);
+  transition: transform 6000ms var(--easing);
 }

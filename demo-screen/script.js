@@ -41,7 +41,7 @@ function wait(ms) {
 
 async function run() {
   blocks[blocks.length - 1].addEventListener('animationstart', async () => {
-    await wait(1700)
+    await wait(2000)
     showText()
     await wait(3000)
     hideText()
@@ -178,7 +178,7 @@ async function mobile() {
   textContainer.removeAttribute('style')
   videoSource.setAttribute('src', './videos/mobile.mov')
   video.load()
-  updateText([' Mobile Support', ' (WIP)', 'Horizontal and scroll mode'])
+  updateText([' Mobile Support', ' (WIP)', 'Both horizontal and vertical mode'])
   await wait(500)
   showVideo()
   await wait(1000)
@@ -204,10 +204,11 @@ async function darkMode() {
   textContainer.removeAttribute('style')
   document.body.style.backgroundColor = '#000'
 
-  updateText([' Dark Mode', 'Ease on your eyes'])
+  updateText([' Dark Mode', 'Eases your eyes', '#fancy'])
 
-  document.querySelector('.moon').style.transform =
-    'translateY(-50%) translateX(-50%)'
+  document.querySelector('.moon-wrapper').style.transform =
+    'translateY(-50%) translateX(-50%) scale(1)'
+  document.querySelector('.moon').style.transform = 'rotate(0)'
 
   setTimeout(() => {
     document.body.style.opacity = '0'
