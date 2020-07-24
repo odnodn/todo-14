@@ -43,5 +43,6 @@ module.exports = {
         asyncArrow: 'always',
       },
     ],
+    'no-irregular-whitespace': [0],
   },
 }

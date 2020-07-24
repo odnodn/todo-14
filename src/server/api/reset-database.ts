@@ -1,16 +1,11 @@
 import express from 'express'
 import { query } from '../modules/query'
+import { resetSql } from './sql/reset'
 
 const router = express.Router()
 
 router.delete(`/board/:boardId/reset`, async (req, res) => {
-  await query(`
-    SET foreign_key_checks = 0;
-    DELETE FROM activity;
-    DELETE FROM card;
-    DELETE FROM \`column\`;
-    SET foreign_key_checks = 1;
-  `)
+  await query(resetSql)
 
   res.sendStatus(200)
 })
