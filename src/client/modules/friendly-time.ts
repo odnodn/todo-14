@@ -22,11 +22,21 @@ export const friendlyTime = (time: Date | string): string => {
       return timeString
     } else {
       const hourDiff = now.diff(atObj, 'hour')
+      const dayDiff = now.diff(atObj, 'day')
+      const monthDiff = now.diff(atObj, 'month')
+      const yearDiff = now.diff(atObj, 'year')
       if (hourDiff > 0 && hourDiff < 24) {
         timeString = `${hourDiff}시간 전`
         return timeString
-      } else if (now.year() === atObj.year()) {
-        return dayjs(time).format('MM/DD HH:mm')
+      } else if (now.day() !== atObj.day() && now.month() === atObj.month()) {
+        timeString = `${dayDiff}일 전`
+        return timeString
+      } else if (now.month() !== atObj.month() && now.year() === atObj.year()) {
+        timeString = `${monthDiff}달 전`
+        return timeString
+      } else if (now.year() !== atObj.year()) {
+        timeString = `${yearDiff || 1}년 전`
+        return timeString
       }
     }
   }
