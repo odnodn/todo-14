@@ -13,7 +13,11 @@
     "open": "wait-on tcp:12100 && open http://localhost:12100",
     "start": "node dist/src/server/main.js",
     "start:browser": "npm-run-all --parallel start open",
-    "pm2:start": "pm2 start npm --name 'todo-14' -- run start"
+    "pm2:start": "if pm2 show todo-14 ; then npm run pm2:stop && npm run pm2:delete && npm run pm2:start ; else pm2 start npm --name 'todo-14' -- run start ; fi",
+    "pm2:restart": "if pm2 show todo-14 ; then pm2 restart todo-14 ; else echo 'No pm2 instance for eodiro client' ; fi",
+    "pm2:stop": "if pm2 show todo-14 ; then pm2 stop todo-14 ; else echo 'No pm2 instance for eodiro client' ; fi",
+    "pm2:delete": "if pm2 show todo-14 ; then pm2 delete todo-14 ; else echo 'No pm2 instance for eodiro client' ; fi",
+    "pm2:reboot": "npm install && npm run build && npm run pm2:stop && npm run pm2:delete && npm run pm2:start"
   },
   "repository": {
     "type": "git",
