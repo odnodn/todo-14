@@ -319,6 +319,7 @@ $elm-padding: 19px;
           font-weight: 400;
           margin-top: 15px;
           white-space: break-spaces;
+          word-break: break-word;
 
           &:empty {
             margin-top: 0;
