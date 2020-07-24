@@ -61,25 +61,31 @@ body {
 @keyframes rise {
   0% {
     box-shadow: none;
+    opacity: 0;
   }
   20% {
     box-shadow: -20px -20px 60px #17d6d0, 20px 20px 60px #087c78;
+    opacity: 1;
   }
   50% {
     box-shadow: -20px -20px 60px #17d6d0, 20px 20px 60px #087c78;
+    opacity: 1;
   }
   100% {
     transform: translateX(-1080%);
     box-shadow: -20px -20px 60px #17d6d0, 20px 20px 60px #087c78;
+    opacity: 1;
   }
 }
 
 .block {
+  opacity: 0;
   display: inline-block;
   min-width: 20vw;
   max-width: 20vw;
   height: 70vh;
   background-color: var(--baemint);
+  background: linear-gradient(135deg, #0ea19c 0%, #11c0b9 100%);
   border-radius: 30px;
   margin-left: 8vw;
   z-index: 100;

@@ -174,16 +174,22 @@ async function mobile() {
   hideVideo()
   await wait(700)
   videoWrapper.removeAttribute('style')
+  videoWrapper.style.borderRadius = '15'
   textContainer.removeAttribute('style')
   videoSource.setAttribute('src', './videos/mobile.mov')
   video.load()
-  updateText([' Mobile Support', 'Work in progress'])
+  updateText([' Mobile Support', ' (WIP)', 'Horizontal and scroll mode'])
   await wait(500)
   showVideo()
   await wait(1000)
   video.play()
   video.onended = () => {
-    darkMode()
+    videoSource.setAttribute('src', './videos/mobile-scroll.mov')
+    video.load()
+    video.play()
+    video.onended = () => {
+      darkMode()
+    }
   }
 }
 
@@ -198,7 +204,7 @@ async function darkMode() {
   textContainer.removeAttribute('style')
   document.body.style.backgroundColor = '#000'
 
-  updateText([' Dark Mode'])
+  updateText([' Dark Mode', 'Ease on your eyes'])
 
   document.querySelector('.moon').style.transform =
     'translateY(-50%) translateX(-50%)'
@@ -209,7 +215,7 @@ async function darkMode() {
 
     setTimeout(() => {
       window.location.reload()
-    }, 500)
+    }, 800)
   }, 6000)
 }
 
