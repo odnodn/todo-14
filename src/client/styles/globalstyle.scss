@@ -30,7 +30,8 @@ html.light-mode {
   --activity-item-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
 
   // Transition
-  --scheme-trans: background-color 800ms ease, box-shadow 800ms ease;
+  --scheme-trans: background-color 800ms ease, box-shadow 800ms ease,
+    border-color 800ms ease;
 }
 
 html.dark-mode {
