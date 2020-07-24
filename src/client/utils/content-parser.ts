@@ -18,8 +18,8 @@ export const getCardTitle = (content) => {
 }
 
 export const parseBrackets = (content: string) => {
-  const cardRegex = /(<<)(.*?)(>>)/gm
-  const columnRegex = /(\[\[)(.*?)(\]\])/gm
+  const cardRegex = /(<<)([\s\S]*?)(>>)/gm
+  const columnRegex = /(\[\[)([\s\S]*?)(\]\])/gm
 
   let str = content.replace(cardRegex, '<span class="content-card">$2</span>')
   str = str.replace(columnRegex, '<span class="content-column">$2</span>')
