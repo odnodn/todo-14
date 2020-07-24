@@ -282,6 +282,8 @@ $elm-padding: 19px;
 
         transition: transform 200ms ease, var(--scheme-trans);
 
+        will-change: transform;
+
         &.hide {
           display: none;
         }
@@ -373,11 +375,14 @@ $elm-padding: 19px;
           font-size: 16px;
 
           border-bottom: 1px solid var(--super-light-blue);
+
+          transition: var(--scheme-trans);
         }
 
         .buttons {
           display: flex;
           padding: $new-card-padding;
+          transition: var(--scheme-trans);
 
           .card-btn {
             flex: 1;
@@ -385,14 +390,15 @@ $elm-padding: 19px;
             font-size: 16px;
             font-weight: 500;
             border-radius: var(--btn-radius);
-            transition: filter 200ms ease;
+            transition: opacity 200ms ease, var(--scheme-trans);
+            will-change: opacity;
 
             &:hover {
-              filter: brightness(0.95);
+              opacity: 0.8;
             }
 
             &:active {
-              filter: brightness(0.9);
+              opacity: 0.5;
             }
 
             &.add,
