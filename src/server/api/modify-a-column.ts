@@ -138,13 +138,15 @@ router.put('/board/:boardId/column/:columnId', async (req, res) => {
         id = ${escape(column.id)}
       `)
 
-      if (newName !== column.name) {
+      if (newName && newName !== column.name) {
         await createActivity({
           type: 'modify',
           boardId,
           content: `컬럼의 이름이 [[${column.name}]]에서 [[${newName}]]로 수정되었습니다.`,
         })
-      } else if (shouldUpdateOrder) {
+      }
+
+      if (shouldUpdateOrder) {
         if (previousColumnId !== column.previousColumnId) {
           await createActivity({
             type: 'move',
