@@ -22,11 +22,11 @@ All the UI and UX were entirely designed by the maintainers of this project. All
 
 ### Dark Mode
 
-In this project, we design and implement a dark mode. Dark mode is a trending alternative design along with the opposing light mode. We did this to leverage the power of **CSS** and **Sass**. They help us easily develop the color schemes(themes).
+We designed and implemented a dark mode which is a trending alternative design along with the opposing light mode. We did this to leverage the power of **CSS** and **Sass**. They help us easily develop the color schemes(themes).
 
 ![color-scheme](https://user-images.githubusercontent.com/19797697/88361089-dc2c8780-cdb2-11ea-848c-71199be978a8.png)
 
-> In this project we use CSS `var()` to modularize UI components and dynamically update the values at appropriate situation
+> CSS `var()` is used to modularize UI components and dynamically update the values at appropriate situation
 
 ### Animation
 
@@ -40,7 +40,7 @@ It is best to have a great designer colleague if you don't have any sense of des
 
 ### [Transaction](https://www.tutorialspoint.com/mysql/mysql-transactions)
 
-In this project, cards and columns are implemented similar to linked-lists. When they are dragged and dropped somewhere, we must update the affected cards or columns' previous pointers. Since we did not implement the real-time sync yet, it could be easily broken by multiple users at the same time. So we use transaction to ensure that all linked operations are atomically completed. It guarantees that all the cards and columns are linked properly in any situation without a single dangling pointer. We've done a lot of e2e tests.
+Cards and columns are implemented similar to linked-lists. When they are dragged and dropped somewhere, we must update the affected cards or columns' previous pointers. Since we did not implement the real-time sync yet, it could be easily broken by multiple users at the same time. So we use transaction to ensure that all linked operations are atomically completed. It guarantees that all the cards and columns are linked properly in any situation without a single dangling pointer. We've done a lot of e2e tests.
 
 ![linked-list](https://user-images.githubusercontent.com/19797697/88360969-793af080-cdb2-11ea-9fe9-33ffc8c58316.png)
 
