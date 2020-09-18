@@ -9,6 +9,7 @@ import { eventCollector } from '@/client/utils/event-collector'
 
 import { CardData } from '../card'
 import { updateColumnBadgeCount } from '@/client/modules/update-column-badge-count'
+import { escapeHtml } from '@/client/utils/escape-html'
 
 //  textarea 입력에 따라 카드추가 버튼 활성/비활성화
 const textAreaKeyupHandler = (e) => {
@@ -40,7 +41,7 @@ const createCardHandler = async ({
   ids,
 }: Pick<CardData, 'cardFormElm' | 'ids'>) => {
   const textAreaElm = cardFormElm.querySelector('textarea')
-  const content = textAreaElm.value.trim()
+  const content = escapeHtml(textAreaElm.value.trim())
   if (!content) return
 
   const [boardId, columnId] = ids

@@ -7,6 +7,7 @@ import { modifyACardAPI } from '@/client/api/modify-a-card'
 
 import { CardData } from '../card'
 import { getCardData } from '../get-data-id'
+import { escapeHtml } from '@/client/utils/escape-html'
 
 const textAreaKeyupHandler = (e) => {
   e.stopPropagation()
@@ -48,7 +49,7 @@ const editCardHandler = async (
   previousCardId: number
 ) => {
   const textAreaElm = cardFormElm.querySelector('textarea')
-  const content = textAreaElm.value.trim()
+  const content = escapeHtml(textAreaElm.value.trim())
   if (!content) return
 
   const cardElm = document.querySelector('.card.hide')
