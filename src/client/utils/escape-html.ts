@@ -7,7 +7,5 @@ export const escapeHtml = (str: string) => {
     "'": '&#039;',
   }
 
-  return str.replace(/[&<>"']/g, (m) => {
-    return map[m]
-  })
+  return str.replace(/[&<>"']/g, (m) => map[m])
 }

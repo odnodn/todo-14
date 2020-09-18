@@ -1,6 +1,7 @@
 import { generateColumn } from './html-generator'
 import { getElementIds } from './get-data-id'
 import { modifyColumn } from '../api/modify-a-column'
+import { escapeHtml } from '../utils/escape-html'
 
 function onClickNewColumnBtn(newColumnBtn: HTMLElement) {
   const columnsContainer = newColumnBtn.closest('.columns-container')
@@ -14,8 +15,6 @@ function onClickNewColumnBtn(newColumnBtn: HTMLElement) {
   const columnNameElm = newColumnElm.querySelector(
     '.column-name'
   ) as HTMLHeadingElement
-
-  const columns = document.querySelectorAll('.column:not(.new)')
 
   const boardId = parseInt(
     document.querySelector('.app').getAttribute('data-board-id')
@@ -77,7 +76,7 @@ function onClickNewColumnBtn(newColumnBtn: HTMLElement) {
       boardId,
       columnId: parseInt(newColumnElm.getAttribute('data-column-id')),
       data: {
-        name: columnNameElm.textContent,
+        name: escapeHtml(columnNameElm.textContent),
       },
     })
 
@@ -137,7 +136,7 @@ window.addEventListener('dblclick', (e) => {
 
   columnNameElm.contentEditable = 'true'
 
-  const originalName = columnNameElm.textContent
+  const originalName = escapeHtml(columnNameElm.textContent)
 
   const sel = window.getSelection()
   const range = document.createRange()
@@ -152,7 +151,7 @@ window.addEventListener('dblclick', (e) => {
 
     columnNameElm.removeAttribute('contenteditable')
 
-    const newName = columnNameElm.textContent.trim()
+    const newName = escapeHtml(columnNameElm.textContent.trim())
 
     if (newName.length === 0 || newName === originalName) {
       columnNameElm.innerHTML = originalName
@@ -165,7 +164,7 @@ window.addEventListener('dblclick', (e) => {
       boardId,
       columnId,
       data: {
-        name: columnNameElm.textContent,
+        name: newName,
       },
     })
   })
