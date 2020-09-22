@@ -13,6 +13,7 @@ import './scripts/color-scheme.ts'
 import { resetDatabaseAPI } from './api/reset-database'
 
 import io from 'socket.io-client'
+import { createCardClient } from './scripts/card-handlers'
 
 function reset() {
   resetDatabaseAPI(
@@ -29,36 +30,40 @@ window.addEventListener('load', () => {
     }
   })
 
-  const socket = io('ws://localhost:12100')
-
-  socket.on('hello2', (data) => {
-    console.log(data)
-  })
-
-  socket.on('connect', () => {
-    // either with send()
-    // socket.send('Hello!')
-
-    // or with emit() and custom event names
-    socket.emit(
-      'salutations',
-      'Hello222!',
-      { mr: 'john' },
-      Uint8Array.from([1, 2, 3, 4])
-    )
-  })
-
-  // handle the event sent with socket.send()
-  socket.on('message', (data) => {
-    console.log(data)
-  })
-
-  // handle the event sent with socket.emit()
-  socket.on('hello_world', (data) => {
-    console.log(data)
-  })
-
   document
     .querySelector<HTMLDivElement>('.reset')
     .addEventListener('click', reset)
+})
+
+export const socket = io('ws://localhost:12100')
+
+socket.on('card', ([data]) => {
+  const { type, payload } = data
+
+  if (type === 'create') {
+    createCardClient(payload.columnId, payload.cardId, payload.content)
+  }
+})
+
+socket.on('connect', () => {
+  // either with send()
+  // socket.send('Hello!')
+
+  // or with emit() and custom event names
+  socket.emit(
+    'salutations',
+    'Hello222!',
+    { mr: 'john' },
+    Uint8Array.from([1, 2, 3, 4])
+  )
+})
+
+// handle the event sent with socket.send()
+socket.on('message', (data) => {
+  console.log(data)
+})
+
+// handle the event sent with socket.emit()
+socket.on('hello_world', (data) => {
+  console.log(data)
 })

@@ -6,18 +6,14 @@ const server = app.listen(PORT, () => console.log(`Listening on port ${PORT}`))
 const io = SocketIO(server)
 
 io.on('connect', (socket) => {
-  console.log('hello world!')
-
-  socket.emit('hello_world', {
-    say: 'hello!',
-  })
-
-  socket.send({
-    say: 'hello!',
-  })
-
   socket.on('salutations', (...data) => {
     console.log(data)
+  })
+
+  socket.on('card', (...data) => {
+    socket.broadcast.emit('card', {
+      ...data,
+    })
   })
 })
 

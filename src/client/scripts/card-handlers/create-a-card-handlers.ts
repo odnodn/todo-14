@@ -35,6 +35,29 @@ const createCardFormHandler = ({ columnElm }: Pick<CardData, 'columnElm'>) => {
   eventCollector.add(textAreaElm, 'keyup', textAreaKeyupHandler)
 }
 
+export function createCardClient(
+  /** Cards container element or column ID */
+  cardsContainer: HTMLElement | number,
+  cardId: number,
+  content: string
+) {
+  const newCardElm = generateCard({ id: cardId, content })
+
+  let container: HTMLElement
+
+  if (typeof cardsContainer === 'number') {
+    container = document.querySelector<HTMLElement>(
+      `[data-column-id="${cardsContainer}"] .cards-container`
+    )
+  } else {
+    container = cardsContainer
+  }
+
+  container.prepend(newCardElm)
+
+  updateColumnBadgeCount(newCardElm.closest('.column'))
+}
+
 // '추가' 확인
 const createCardHandler = async ({
   cardFormElm,
@@ -50,12 +73,10 @@ const createCardHandler = async ({
     urlParam: { boardId, columnId },
     bodyParam: { content },
   })
-  const newCardElm = generateCard({ id: newCard.id, content })
 
-  cardFormElm.parentElement.prepend(newCardElm)
+  createCardClient(cardFormElm.parentElement, newCard.id, content)
+
   cardFormElm.remove()
-
-  updateColumnBadgeCount(newCardElm.closest('.column'))
 
   eventCollector.remove(textAreaElm, 'keyup')
 }
