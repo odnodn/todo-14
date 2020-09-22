@@ -1,6 +1,6 @@
 {
   "name": "todo-14",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "",
   "main": "src/server/main.ts",
   "scripts": {
@@ -30,7 +30,9 @@
   "bugs": {
     "url": "https://github.com/woowa-techcamp-2020/todo-14/issues"
   },
-  "browserslist": ["> 1%"],
+  "browserslist": [
+    "> 1%"
+  ],
   "homepage": "https://github.com/woowa-techcamp-2020/todo-14#readme",
   "dependencies": {
     "app-root-path": "^3.0.0",
