@@ -12,14 +12,22 @@ import './scripts/activity.ts'
 import './scripts/color-scheme.ts'
 import { resetDatabaseAPI } from './api/reset-database'
 
+function reset() {
+  resetDatabaseAPI(
+    parseInt(document.querySelector('.app').getAttribute('board-id'))
+  ).then(() => {
+    window.location.reload()
+  })
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('keydown', (e) => {
-    if (e.key === 'z' && e.metaKey && e.ctrlKey) {
-      resetDatabaseAPI(
-        parseInt(document.querySelector('.app').getAttribute('board-id'))
-      ).then(() => {
-        window.location.reload()
-      })
+    if (e.key === 'z' && e.metaKey && e.shiftKey) {
+      reset()
     }
   })
+
+  document
+    .querySelector<HTMLDivElement>('.reset')
+    .addEventListener('click', reset)
 })
