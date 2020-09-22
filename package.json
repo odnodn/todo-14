@@ -17,7 +17,8 @@
     "pm2:restart": "if pm2 show todo-14 ; then pm2 restart todo-14 ; else echo 'No pm2 instance for eodiro client' ; fi",
     "pm2:stop": "if pm2 show todo-14 ; then pm2 stop todo-14 ; else echo 'No pm2 instance for eodiro client' ; fi",
     "pm2:delete": "if pm2 show todo-14 ; then pm2 delete todo-14 ; else echo 'No pm2 instance for eodiro client' ; fi",
-    "pm2:reboot": "npm install && npm run build && npm run pm2:stop && npm run pm2:delete && npm run pm2:start"
+    "pm2:reboot": "npm install && npm run build && npm run pm2:stop && npm run pm2:delete && npm run pm2:start",
+    "release": "shipjs prepare"
   },
   "repository": {
     "type": "git",
@@ -29,9 +30,7 @@
   "bugs": {
     "url": "https://github.com/woowa-techcamp-2020/todo-14/issues"
   },
-  "browserslist": [
-    "> 1%"
-  ],
+  "browserslist": ["> 1%"],
   "homepage": "https://github.com/woowa-techcamp-2020/todo-14#readme",
   "dependencies": {
     "app-root-path": "^3.0.0",
@@ -67,6 +66,7 @@
     "rimraf": "^3.0.2",
     "sass": "^1.26.10",
     "sass-loader": "^9.0.2",
+    "shipjs": "0.21.0",
     "style-loader": "^1.2.1",
     "terser-webpack-plugin": "^4.2.1",
     "ts-loader": "^8.0.1",

@@ -9,3 +9,5 @@ public/*
 !public/assets
 
 **/config/index.ts
+
+.env
