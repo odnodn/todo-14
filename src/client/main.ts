@@ -12,6 +12,9 @@ import './scripts/activity.ts'
 import './scripts/color-scheme.ts'
 import { resetDatabaseAPI } from './api/reset-database'
 
+import io from 'socket.io-client'
+import { createCardClient } from './scripts/card-handlers'
+
 function reset() {
   resetDatabaseAPI(
     parseInt(document.querySelector('.app').getAttribute('board-id'))
@@ -30,4 +33,14 @@ window.addEventListener('load', () => {
   document
     .querySelector<HTMLDivElement>('.reset')
     .addEventListener('click', reset)
+})
+
+export const socket = io('ws://localhost:12100')
+
+socket.on('card', ([data]) => {
+  const { type, payload } = data
+
+  if (type === 'create') {
+    createCardClient(payload.columnId, payload.cardId, payload.content)
+  }
 })

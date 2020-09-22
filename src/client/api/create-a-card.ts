@@ -3,6 +3,7 @@ import {
   CreateCardRequestBody,
   CreateCardResponseData,
 } from '@/server/api/create-a-card'
+import { socket } from '../main'
 
 export const createACardAPI = async ({
   urlParam,
@@ -25,6 +26,16 @@ export const createACardAPI = async ({
   if (!res.ok) return null
 
   const { card } = (await res.json()) as CreateCardResponseData
+
+  socket.emit('card', {
+    type: 'create',
+    payload: {
+      boardId: urlParam.boardId,
+      columnId: urlParam.columnId,
+      cardId: card.id,
+      content: card.content,
+    },
+  })
 
   return card
 }
