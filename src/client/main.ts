@@ -35,7 +35,7 @@ window.addEventListener('load', () => {
     .addEventListener('click', reset)
 })
 
-export const socket = io(
+export const socket = io.connect(
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:12100'
     : 'https://todo.woowahan.dev'
