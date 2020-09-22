@@ -478,3 +478,25 @@ $elm-padding: 19px;
     max-width: 30px;
   }
 }
+
+.reset {
+  cursor: pointer;
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  padding: 8px 10px;
+  line-height: 1;
+  font-size: 13px;
+  border-radius: 5px;
+  background-color: var(--alt-black);
+  color: var(--white);
+
+  code {
+    font-weight: 600;
+    color: var(--baemint);
+  }
+
+  &:hover {
+    box-shadow: 0 0 0 3px var(--baemint);
+  }
+}
