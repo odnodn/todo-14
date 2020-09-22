@@ -20,7 +20,7 @@ function reset() {
   })
 }
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('load', () => {
   window.addEventListener('keydown', (e) => {
     if (e.key === 'z' && e.metaKey && e.shiftKey) {
       reset()

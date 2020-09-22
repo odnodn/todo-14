@@ -3,7 +3,7 @@ import { parseBrackets, parseLink } from '../utils/content-parser'
 import { generateActivity, generateElement } from './html-generator'
 import { Activity, ActivityType } from '@/types/response'
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('load', () => {
   const activityBtn = document.querySelector<HTMLElement>('.activity-btn')
   const activityJumbo = document.querySelector<HTMLElement>('.activity-jumbo')
   const activityClose = document.querySelector<HTMLElement>('.activity-close')

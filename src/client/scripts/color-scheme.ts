@@ -1,4 +1,4 @@
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('load', () => {
   const isDarkMode = localStorage.getItem('color-scheme') === 'dark-mode'
 
   if (isDarkMode) {
