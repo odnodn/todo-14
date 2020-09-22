@@ -1,7 +1,9 @@
 const path = require('path')
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 
 /** @type {import('webpack').Configuration} */
 const config = {
@@ -39,31 +41,19 @@ const config = {
     ],
   },
   optimization: {
-    usedExports: true,
-    splitChunks: {
-      chunks: 'all',
-      minSize: 10,
-      maxSize: 0,
-      minChunks: 1,
-      maxAsyncRequests: 6,
-      maxInitialRequests: 4,
-      automaticNameDelimiter: '~',
-      cacheGroups: {
-        defaultVendors: {
-          test: /[\\/]node_modules[\\/]/,
-          priority: -10,
-        },
-        default: {
-          minChunks: 2,
-          priority: -20,
-          reuseExistingChunk: true,
-        },
-      },
-    },
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        test: /\.(j|t)s(\?.*)?$/i,
+      }),
+    ],
   },
   plugins: [
     new MiniCssExtractPlugin(),
     new HtmlWebpackPlugin({ template: 'src/client/pages/index.html' }),
+    new ScriptExtHtmlWebpackPlugin({
+      defaultAttribute: 'async',
+    }),
   ],
 }
 
