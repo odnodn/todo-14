@@ -35,7 +35,11 @@ window.addEventListener('load', () => {
     .addEventListener('click', reset)
 })
 
-export const socket = io('ws://localhost:12100')
+export const socket = io(
+  process.env.NODE_ENV === 'development'
+    ? 'ws://localhost:12100'
+    : 'wss://todo.woowahan.dev'
+)
 
 socket.on('card', ([data]) => {
   const { type, payload } = data
