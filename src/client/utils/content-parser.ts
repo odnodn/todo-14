@@ -32,7 +32,7 @@ export const parseLink = (content: string) => {
 
   const str = content.replace(
     linkRegex,
-    '<a class="link" href="$5" target="_blank">$2</a>'
+    '<a class="link" rel="noreferrer" href="$5" target="_blank">$2</a>'
   )
 
   return str
