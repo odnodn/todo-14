@@ -46,6 +46,18 @@ const editCardFormHandler = ({
   eventCollector.add(textAreaElm, 'keyup', textAreaKeyupHandler)
 }
 
+export function modifyCardClient(cardId: number, content: string) {
+  const editCardElm = document.querySelector<HTMLElement>(
+    `[data-card-id="${cardId}"]:not(.new)`
+  )
+  if (!editCardElm) return
+
+  const str = parseLink(content)
+  const [title, body] = parseContent(str)
+  editCardElm.querySelector('.card-title').innerHTML = title
+  editCardElm.querySelector('.card-body').innerHTML = body
+}
+
 // '수정' 확인
 const editCardHandler = async (
   { cardFormElm, ids }: Pick<CardData, 'cardFormElm' | 'ids'>,
@@ -66,10 +78,11 @@ const editCardHandler = async (
 
   if (!success) return
 
-  const str = parseLink(content)
-  const [title, body] = parseContent(str)
-  cardElm.querySelector('.card-title').innerHTML = title
-  cardElm.querySelector('.card-body').innerHTML = body
+  // const str = parseLink(content)
+  // const [title, body] = parseContent(str)
+  // cardElm.querySelector('.card-title').innerHTML = title
+  // cardElm.querySelector('.card-body').innerHTML = body
+  modifyCardClient(cardId, content)
 
   cardFormElm.remove()
   cardElm.classList.remove('hide')

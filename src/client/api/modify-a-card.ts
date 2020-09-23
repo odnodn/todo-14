@@ -2,6 +2,7 @@ import {
   ModifyCardRequestParams,
   ModifyCardRequestBody,
 } from '@/server/api/modify-a-card'
+import { socket } from '../main'
 
 export const modifyACardAPI = async ({
   urlParam,
@@ -20,6 +21,16 @@ export const modifyACardAPI = async ({
       body: JSON.stringify(bodyParam),
     }
   )
+
+  socket.emit('card', {
+    type: 'modify',
+    payload: {
+      boardId: urlParam.boardId,
+      columnId: urlParam.columnId,
+      cardId: urlParam.cardId,
+      content: bodyParam.content,
+    },
+  })
 
   return res.ok
 }
