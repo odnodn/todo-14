@@ -18,6 +18,7 @@ import {
   modifyCardClient,
   removeCardClient,
 } from './scripts/card-handlers'
+import { moveCardClient } from './scripts/card-dnd'
 
 function reset() {
   resetDatabaseAPI(
@@ -55,6 +56,10 @@ socket.on('card', ([data]) => {
     }
     case 'modify': {
       modifyCardClient(payload.cardId, payload.content)
+      break
+    }
+    case 'move': {
+      moveCardClient(payload.cardId, payload.columnId, payload.previousCardId)
       break
     }
     case 'remove': {
