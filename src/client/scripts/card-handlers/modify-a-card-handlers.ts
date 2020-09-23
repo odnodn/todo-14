@@ -26,6 +26,9 @@ const editCardFormHandler = ({
   cardElm,
   ids,
 }: Pick<CardData, 'cardElm' | 'ids'>) => {
+  // 한 번에 하나의 카드만 수정할 수 있도록
+  if (document.querySelector('.card.hide')) return
+
   const { content } = getCardData(cardElm)
 
   const [, , cardId] = ids
