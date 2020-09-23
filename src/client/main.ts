@@ -13,7 +13,11 @@ import './scripts/color-scheme.ts'
 import { resetDatabaseAPI } from './api/reset-database'
 
 import io from 'socket.io-client'
-import { createCardClient, modifyCardClient } from './scripts/card-handlers'
+import {
+  createCardClient,
+  modifyCardClient,
+  removeCardClient,
+} from './scripts/card-handlers'
 
 function reset() {
   resetDatabaseAPI(
@@ -51,6 +55,10 @@ socket.on('card', ([data]) => {
     }
     case 'modify': {
       modifyCardClient(payload.cardId, payload.content)
+      break
+    }
+    case 'remove': {
+      removeCardClient(payload.cardId)
       break
     }
   }
