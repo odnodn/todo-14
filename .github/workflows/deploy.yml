@@ -1,0 +1,30 @@
+name: CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        
+      - name: deploy
+        uses: appleboy/ssh-action@master
+        with:
+          key: ${{ secrets.JH_SERVER_KEY }}
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER_NAME }}
+          script: |
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            cd ~/todo-14/
+            npm run pm2:stop
+            git pull
+            npm ci
+            npm run build
+            npm run pm2:restart
