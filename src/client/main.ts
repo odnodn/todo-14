@@ -13,7 +13,12 @@ import './scripts/color-scheme.ts'
 import { resetDatabaseAPI } from './api/reset-database'
 
 import io from 'socket.io-client'
-import { createCardClient } from './scripts/card-handlers'
+import {
+  createCardClient,
+  modifyCardClient,
+  removeCardClient,
+} from './scripts/card-handlers'
+import { moveCardClient } from './scripts/card-dnd'
 
 function reset() {
   resetDatabaseAPI(
@@ -44,7 +49,22 @@ export const socket = io.connect(
 socket.on('card', ([data]) => {
   const { type, payload } = data
 
-  if (type === 'create') {
-    createCardClient(payload.columnId, payload.cardId, payload.content)
+  switch (type) {
+    case 'create': {
+      createCardClient(payload.columnId, payload.cardId, payload.content)
+      break
+    }
+    case 'modify': {
+      modifyCardClient(payload.cardId, payload.content)
+      break
+    }
+    case 'move': {
+      moveCardClient(payload.cardId, payload.columnId, payload.previousCardId)
+      break
+    }
+    case 'remove': {
+      removeCardClient(payload.cardId)
+      break
+    }
   }
 })

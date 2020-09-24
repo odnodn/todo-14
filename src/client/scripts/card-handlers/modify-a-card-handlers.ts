@@ -26,6 +26,9 @@ const editCardFormHandler = ({
   cardElm,
   ids,
 }: Pick<CardData, 'cardElm' | 'ids'>) => {
+  // 한 번에 하나의 카드만 수정할 수 있도록
+  if (document.querySelector('.card.hide')) return
+
   const { content } = getCardData(cardElm)
 
   const [, , cardId] = ids
@@ -41,6 +44,18 @@ const editCardFormHandler = ({
   textAreaElm.select()
 
   eventCollector.add(textAreaElm, 'keyup', textAreaKeyupHandler)
+}
+
+export function modifyCardClient(cardId: number, content: string) {
+  const editCardElm = document.querySelector<HTMLElement>(
+    `[data-card-id="${cardId}"]:not(.new)`
+  )
+  if (!editCardElm) return
+
+  const str = parseLink(content)
+  const [title, body] = parseContent(str)
+  editCardElm.querySelector('.card-title').innerHTML = title
+  editCardElm.querySelector('.card-body').innerHTML = body
 }
 
 // '수정' 확인
@@ -63,10 +78,11 @@ const editCardHandler = async (
 
   if (!success) return
 
-  const str = parseLink(content)
-  const [title, body] = parseContent(str)
-  cardElm.querySelector('.card-title').innerHTML = title
-  cardElm.querySelector('.card-body').innerHTML = body
+  // const str = parseLink(content)
+  // const [title, body] = parseContent(str)
+  // cardElm.querySelector('.card-title').innerHTML = title
+  // cardElm.querySelector('.card-body').innerHTML = body
+  modifyCardClient(cardId, content)
 
   cardFormElm.remove()
   cardElm.classList.remove('hide')

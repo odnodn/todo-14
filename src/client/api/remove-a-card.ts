@@ -1,4 +1,5 @@
 import { RemoveCardRequestParams } from '@/server/api/remove-a-card'
+import { socket } from '../main'
 
 export const removeACardAPI = async ({
   urlParam,
@@ -14,6 +15,15 @@ export const removeACardAPI = async ({
       },
     }
   )
+
+  socket.emit('card', {
+    type: 'remove',
+    payload: {
+      boardId: urlParam.boardId,
+      columnId: urlParam.columnId,
+      cardId: urlParam.cardId,
+    },
+  })
 
   return res.ok
 }

@@ -85,6 +85,35 @@ function transformCard(card: HTMLElement, distance: number): void {
   card.style.transform = card.style.webkitTransform = `translate3d(0, ${distance}px, 0)`
 }
 
+export function moveCardClient(
+  cardId: number,
+  columnId: number,
+  previousCardId: number
+) {
+  const moveCardElm = document.querySelector<HTMLElement>(
+    `[data-card-id="${cardId}"]`
+  )
+  if (!moveCardElm) return
+
+  // first card in column
+  if (previousCardId === null) {
+    const targetColumnElm = document.querySelector(
+      `[data-column-id="${columnId}"] .cards-container`
+    )
+    const cloneCardElm = moveCardElm.cloneNode()
+    targetColumnElm?.prepend(cloneCardElm)
+    moveCardElm.remove()
+  } else {
+    const dropTargetCard = document.querySelector(
+      `[data-card-id="${previousCardId}"]`
+    )
+    dropTargetCard.parentElement.insertBefore(
+      moveCardElm,
+      dropTargetCard.nextElementSibling
+    )
+  }
+}
+
 window.addEventListener('pointerdown', (e) => {
   if (document.querySelector('.card.new')) {
     return
